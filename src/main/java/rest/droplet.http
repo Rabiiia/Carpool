@@ -1,0 +1,30 @@
+
+### BEFORE YOU CAN POST USER ON YOUR DROPLET DATABASE
+    FIRST PUSH SO THAT YOUR CURRENT JAVA APP IS DEPLOYED ON YOUR TOMCAT SERVER ON YOUR DROPLET
+### IF ITS SUCCESFULLY DEPLOYED THEN:
+
+###
+replace xxx with your domain name
+###
+replace the next xxx with your artifactId which you wrote in pom xml
+
+###
+replace username and password after your own taste. Preferably your own name and nice code
+
+###
+Press POST and it should create the user on your droplet database which has user role.
+
+###
+YOU must create ADMIN manualt on your droplet database.
+
+
+###
+POST https://xxx/xxx/api/user
+Content-Type: application/json
+
+{
+    "username": "yourname",
+    "password": "yourcode"
+
+}
+
