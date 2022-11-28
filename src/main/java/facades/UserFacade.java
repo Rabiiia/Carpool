@@ -1,18 +1,12 @@
 package facades;
 
-import com.google.gson.JsonElement;
-import entities.Role;
-import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
 
+import entities.User;
 import errorhandling.API_Exception;
-import org.mindrot.jbcrypt.BCrypt;
 import security.errorhandling.AuthenticationException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lam@cphbusiness.dk
@@ -78,23 +72,18 @@ public class UserFacade {
     // retunere et User entitiy objekt.
     // når man så er færdig med at samlet User objekt, så kan jeg lave det om til UserDTO.
     // LIGE NU bruger vi createUser metoden som returnerer et entity objekt, men det bliver lavet om til userDTO i Userresource i rest
-    public User createUser(String username, String password) throws API_Exception {
+    public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode) throws API_Exception {
 
 
         // Construct user:
-        User user = new User(username, password);
+        User user = new User(username, password, name, phone, address, zipcode);
 
         // Persist user to database:
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(user);
-            Role role = em.find(Role.class, "user");
-            if (role == null) {
-                role = new Role("user");
-                em.persist(role);
-            }
-            user.addRole(role);
+
             em.getTransaction().commit();
         } catch (PersistenceException e) {
             throw new API_Exception("Could not create user", 500, e);
@@ -104,23 +93,5 @@ public class UserFacade {
 
         return user;
     }
-
-
-    // Just a way to test
-//    public static void main(String[] args) throws API_Exception, AuthenticationException {
-//        System.out.println(BCrypt.checkpw("test123", "$2a$10$QeEwAmgZAh2ALPWobjqsVeMlGCsPIRUFgW8BvLoDAwjqYNFZarh2C"));
-//
-//
-//        User user = new User("test_user2", "1234");
-//        user.verifyPassword("123");
-//
-//        EntityManagerFactory emf = utils.EMF_Creator.createEntityManagerFactory();
-//        UserFacade userFacade = UserFacade.getUserFacade(emf);
-//        System.out.println(  userFacade.getVeryfiedUser("NyUser", "test123"));
-//
-//        List<String> roles = new ArrayList<>();
-//        roles.add("admin");
-//        roles.add("user");
-//        System.out.println(userFacade.createUser("test_user2", "1234", roles));
-    }
+}
 

@@ -1,8 +1,6 @@
 package rest;
 
 import entities.User;
-import entities.Role;
-
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -15,14 +13,11 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
-//Disabled
+@Disabled
 public class LoginEndpointTest {
 
     private static final int SERVER_PORT = 7777;
@@ -67,22 +62,15 @@ public class LoginEndpointTest {
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
             em.createQuery("delete from User").executeUpdate();
-            em.createQuery("delete from Role").executeUpdate();
 
-            Role userRole = new Role("user");
-            Role adminRole = new Role("admin");
-            User user = new User("user", "test");
-            user.addRole(userRole);
-            User admin = new User("admin", "test");
-            admin.addRole(adminRole);
-            User both = new User("user_admin", "test");
-            both.addRole(userRole);
-            both.addRole(adminRole);
-            em.persist(userRole);
-            em.persist(adminRole);
+            User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
+
+            User admin = new User("admin", "test","Konrad", 30303030, "Liljevej 13", 2900);
+
+            admin.setRole("admin");
             em.persist(user);
             em.persist(admin);
-            em.persist(both);
+
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
         } finally {

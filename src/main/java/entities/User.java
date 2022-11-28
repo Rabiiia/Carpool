@@ -1,87 +1,155 @@
 package entities;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.mindrot.jbcrypt.BCrypt;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
 @NamedQuery(name = "User.deleteAllRows", query = "DELETE FROM User")
-public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
+@Table(name = "user")
+public class User {
     @Id
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
+    private Integer id;
+
+    @Size(max = 45)
     @NotNull
-    @Column(name = "user_name", length = 25)
-    private String userName;
-    @Basic(optional = false)
+    @Column(name = "username", nullable = false, length = 45)
+    private String username;
+
+    @Size(max = 255)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "user_pass")
-    private String userPass;
-    @JoinTable(name = "user_roles", joinColumns = {
-            @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
-            @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Size(max = 45)
+    @NotNull
+    @Column(name = "name", nullable = false, length = 45)
+    private String name;
+
+    @NotNull
+    @Column(name = "phone", nullable = false)
+    private Integer phone;
+
+    @Size(max = 45)
+    @NotNull
+    @Column(name = "address", nullable = false, length = 45)
+    private String address;
+
+    @NotNull
+    @Column(name = "zipcode", nullable = false)
+    private Integer zipcode;
+
+    @NotNull
+    @Lob
+    @Column(name = "role", nullable = false)
+    private String role;
+
     @ManyToMany
-    private List<Role> roleList = new ArrayList<>();
+    @JoinTable(name = "passengers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "ride_id"))
+    private Set<Ride> rides = new LinkedHashSet<>();
 
-    public List<String> getRolesAsStrings() {
-        if (roleList.isEmpty()) {
-            return null;
-        }
-        List<String> rolesAsStrings = new ArrayList<>();
-        roleList.forEach((role) -> rolesAsStrings.add(role.getRoleName()));
-        return rolesAsStrings;
+    public User() {
     }
 
-    public User() {}
-
-    //TODO Change when password is hashed
-    public boolean verifyPassword(String pw){
-        return BCrypt.checkpw(pw,userPass);
+    public User(String username, String password) {
+        this.username = username;
+        this.password = BCrypt.hashpw(password,BCrypt.gensalt());
     }
 
-    public User(String userName, String userPass) {
-        this.userName = userName;
-
-        this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
+    public User(String username, String password, String name, Integer phone, String address, Integer zipcode) {
+        this.username = username;
+        this.password = BCrypt.hashpw(password,BCrypt.gensalt());
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.zipcode = zipcode;
+        role = "user";
     }
 
-    public String getUserName() {
-        return userName;
+    public boolean verifyPassword(String pw) {
+        return BCrypt.checkpw(pw, password);
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+
+    public Integer getId() {
+        return id;
     }
 
-    public String getUserPass() {
-        return this.userPass;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setUserPass(String userPass) {
-        this.userPass = userPass;
+    public String getUsername() {
+        return username;
     }
 
-    public List<Role> getRoleList() {
-        return roleList;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setRoleList(List<Role> roleList) {
-        this.roleList = roleList;
+    public String getPassword() {
+        return password;
     }
 
-    public void addRole(Role userRole) {
-        roleList.add(userRole);
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public static void main(String[] args) {
-        User user = new User("test_user", "123");
-        //user.verifyPassword("123");
-        System.out.println( user.verifyPassword("123"));
+    public String getName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getPhone() {
+        return phone;
+    }
+
+    public void setPhone(Integer phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(Integer zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Set<Ride> getRides() {
+        return rides;
+    }
+
+    public void setRides(Set<Ride> rides) {
+        this.rides = rides;
+    }
+
+
 }

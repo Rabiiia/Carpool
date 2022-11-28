@@ -3,9 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import dtos.ChuckDTO;
 import dtos.DadJokeDTO;
-import entities.User;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -21,9 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
-import facades.Populator;
-import security.UserPrincipal;
-
+import entities.User;
 import externalAPIHandling.JokeFetcher;
 import utils.EMF_Creator;
 

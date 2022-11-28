@@ -16,20 +16,14 @@ import java.util.List;
 public class Token {
     public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
 
-    public static SignedJWT createToken(String username, List<String> roles) throws JOSEException {
-        StringBuilder res = new StringBuilder();
-        for (String string : roles) {
-            res.append(string);
-            res.append(",");
-        }
-        String rolesAsString = res.length() > 0 ? res.substring(0, res.length() - 1) : "";
+    public static SignedJWT createToken(String username, String role) throws JOSEException {
 
         JWSSigner signer = new MACSigner(SharedSecret.getSharedKey());
         Date date = new Date();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .claim("username", username)
-                .claim("roles", rolesAsString)
+                .claim("role", role)
                 .issueTime(date)
                 .expirationTime(new Date(date.getTime() + TOKEN_EXPIRE_TIME))
                 .build();
