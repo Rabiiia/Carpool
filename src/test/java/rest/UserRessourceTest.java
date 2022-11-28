@@ -102,10 +102,10 @@ public class UserRessourceTest {
                 .then()
                 .assertThat()
                 .statusCode(200);
-                //.body("id", notNullValue())
+                //.body("id", notNullValue()) //
                 //.body("name", equalTo("testName"))
                 //.body("role", equalTo("user"));
-                //.body("children", hasItems(hasEntry("name","Josephine")));
+
     }
 
 
