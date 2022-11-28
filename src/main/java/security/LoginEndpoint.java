@@ -46,7 +46,7 @@ public class LoginEndpoint {
 
         try {
             UserDTO user = new UserDTO(USER_FACADE.getVeryfiedUser(username, password));
-            SignedJWT token = Token.createToken(username, user.getRoles());
+            SignedJWT token = Token.createToken(username, user.getRole());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", username);
             responseJson.addProperty("token", token.serialize());

@@ -7,14 +7,14 @@ import java.util.List;
 public class UserDTO {
 
     String name;
-    List<String> roles;
+    String role;
 
     public UserDTO(User user) {
-        this.name = user.getUserName();
-        this.roles = user.getRolesAsStrings();
+        this.name = user.getUsername();
+        this.role = user.getRole();
     }
 
-    public List<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 }
