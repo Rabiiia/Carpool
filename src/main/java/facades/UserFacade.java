@@ -3,6 +3,7 @@ package facades;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 
 import entities.User;
 import errorhandling.API_Exception;
@@ -36,7 +37,9 @@ public class UserFacade {
         EntityManager em = emf.createEntityManager();
         User user;
         try {
-            user = em.find(User.class, username);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u where u.username = :username", User.class);
+            query.setParameter("username", username);
+            user = query.getSingleResult();
             System.out.println(user);
             //System.out.println("Here in getVeryfiedUser " + user.getUserName() + " " + user.getUserPass());
             //System.out.println("Here password in getVeryfiedUser " + password + " " + user.verifyPassword(password));
@@ -56,7 +59,9 @@ public class UserFacade {
         EntityManager em = emf.createEntityManager();
         User user;
         try {
-            user = em.find(User.class, username);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u where u.username = :username", User.class);
+            query.setParameter("username", username);
+            user = query.getSingleResult();
             if (user == null /*|| !user.verifyPassword(password)*/) {
                 throw new AuthenticationException("Faulty token");
             }

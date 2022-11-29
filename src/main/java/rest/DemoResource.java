@@ -1,6 +1,7 @@
 package rest;
 
 import com.google.gson.Gson;
+import com.nimbusds.jose.shaded.json.JSONUtil;
 import dtos.ChuckDTO;
 import dtos.DadJokeDTO;
 
@@ -11,11 +12,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Produces;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
@@ -54,6 +53,20 @@ public class DemoResource {
             TypedQuery<User> query = em.createQuery ("select u from User u",entities.User.class);
             List<User> users = query.getResultList();
             return "[" + users.size() + "]";
+        } finally {
+            em.close();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{id}")
+    public String getSpecificUser(@PathParam("id") int id) {
+
+        EntityManager em = EMF.createEntityManager();
+        try {
+            User user = em.find(entities.User.class, id);
+            return gson.toJson(user);
         } finally {
             em.close();
         }

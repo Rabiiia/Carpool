@@ -16,8 +16,8 @@ public class UserDTO {
 
      int phone;
      int zipcode;
-    String name;
-    String role;
+     String name;
+     String role;
 
     public UserDTO(User user) {
         if(user.getId() != null)

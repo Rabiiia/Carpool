@@ -62,5 +62,4 @@ class UserFacadeTest {
         System.out.println(actual.getId()); //should print 2 meaning second index in the list
     }
 
-
 }
