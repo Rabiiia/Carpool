@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import entities.User;
 import errorhandling.API_Exception;
 import org.junit.jupiter.api.*;
+import rest.DemoResource;
 import utils.EMF_Creator;
 
 
@@ -61,5 +62,6 @@ class UserFacadeTest {
         assertTrue(actual.getId()!=0);
         System.out.println(actual.getId()); //should print 2 meaning second index in the list
     }
+
 
 }

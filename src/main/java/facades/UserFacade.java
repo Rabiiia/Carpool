@@ -78,8 +78,6 @@ public class UserFacade {
     // når man så er færdig med at samlet User objekt, så kan jeg lave det om til UserDTO.
     // LIGE NU bruger vi createUser metoden som returnerer et entity objekt, men det bliver lavet om til userDTO i Userresource i rest
     public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode) throws API_Exception {
-
-
         // Construct user:
         User user = new User(username, password, name, phone, address, zipcode);
 
@@ -95,10 +93,8 @@ public class UserFacade {
         } finally {
             em.close();
         }
-
         return user;
     }
-
 
 }
 
