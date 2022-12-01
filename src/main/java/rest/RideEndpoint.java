@@ -5,27 +5,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import dtos.RideDTO;
 import dtos.Waypoint;
-import entities.Ride;
 import errorhandling.API_Exception;
 import facades.RideFacade;
-import security.SharedSecret;
+import security.Token;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,9 +26,6 @@ import java.util.stream.Collectors;
 public class RideEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final RideFacade RIDE_FACADE = RideFacade.getInstance(EMF);
-
-    @Context
-    private UriInfo context;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -65,16 +55,7 @@ public class RideEndpoint {
         }
 
         try {
-            // Verify token
-            SignedJWT signedJWT = SignedJWT.parse(jwtString);
-            JWSVerifier verifier = new MACVerifier(SharedSecret.getSharedKey());
-            if (signedJWT.verify(verifier)) {
-                if (new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime()) {
-                    throw new AuthenticationException("The provided token is not valid");
-                }
-                System.out.println("Token is valid");
-            }
-            // Create ride
+            SignedJWT signedJWT = Token.getVerifiedToken(jwtString);
             RideDTO ride = new RideDTO(RIDE_FACADE.createRide(Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()),
                     origin,
                     destination,

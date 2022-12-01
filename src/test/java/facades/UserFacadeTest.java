@@ -19,12 +19,7 @@ class UserFacadeTest {
     private static UserFacade USER_FACADE;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-
     User u1;
-
-
-
     @BeforeAll
     public static void setUpClass() {
         EMF = EMF_Creator.createEntityManagerFactoryForTest();

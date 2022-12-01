@@ -29,6 +29,7 @@ public class DemoResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private final Gson gson = new Gson();
+
     @Context
     private UriInfo context;
 

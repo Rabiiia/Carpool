@@ -1,7 +1,8 @@
 package facades;
 
-import entities.Ride;
 import dtos.Waypoint;
+import entities.Request;
+import entities.Ride;
 import entities.User;
 
 import javax.persistence.EntityManager;
