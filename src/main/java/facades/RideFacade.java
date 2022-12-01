@@ -1,12 +1,12 @@
 package facades;
 
 import entities.Ride;
-import entities.User;
 import dtos.Waypoint;
+import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.Date;
+import java.util.List;
 
 public class RideFacade {
     private static RideFacade instance;
@@ -32,11 +32,13 @@ public class RideFacade {
         return instance;
     }
 
-    public Ride createRide(int driverId, Waypoint origin, Waypoint destination, long arrival, int seats) {
+    public Ride createRide(int driverId, Waypoint origin, Waypoint destination, long arrival, byte seats) {
         Ride ride = null;
         User driver;
         EntityManager em = EMF.createEntityManager();
+        System.out.println("A");
         if ((driver = em.find(User.class, driverId)) != null) {
+            System.out.println("B");
             ride = new Ride(origin, destination, arrival, seats, driver);
             try {
                 em.getTransaction().begin();
@@ -49,4 +51,17 @@ public class RideFacade {
         return ride;
     }
 
+    public List<Ride> getAllRides() {
+        EntityManager em = EMF.createEntityManager();
+        try {
+            return em.createQuery("SELECT r FROM Ride r", Ride.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Ride getRide(int id) {
+        EntityManager em = EMF.createEntityManager();
+        return em.find(Ride.class, id);
+    }
 }

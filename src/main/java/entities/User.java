@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@NamedQuery(name = "User.deleteAllRows", query = "DELETE FROM User")
 @Table(name = "user")
 public class User {
     @Id
@@ -55,6 +54,9 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "ride_id"))
     private Set<Ride> rides = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "driver")
+    private Set<Ride> ridesDriver = new LinkedHashSet<>();
 
     public User() {
     }
@@ -126,7 +128,7 @@ public class User {
         this.address = address;
     }
 
-    public int getZipcode() {
+    public Integer getZipcode() {
         return zipcode;
     }
 
@@ -149,4 +151,13 @@ public class User {
     public void setRides(Set<Ride> rides) {
         this.rides = rides;
     }
+
+    public Set<Ride> getRidesDriver() {
+        return ridesDriver;
+    }
+
+    public void setRidesDriver(Set<Ride> ridesDriver) {
+        this.ridesDriver = ridesDriver;
+    }
+
 }

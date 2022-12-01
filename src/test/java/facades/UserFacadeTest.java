@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import entities.User;
 import errorhandling.API_Exception;
 import org.junit.jupiter.api.*;
-import rest.DemoResource;
 import utils.EMF_Creator;
 
 

@@ -1,11 +1,11 @@
 package facades;
 
-import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import entities.User;
 import errorhandling.API_Exception;
 import security.errorhandling.AuthenticationException;
 

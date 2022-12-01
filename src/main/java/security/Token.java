@@ -10,7 +10,6 @@ import com.nimbusds.jwt.SignedJWT;
 import entities.User;
 
 import java.util.Date;
-import java.util.List;
 
 // We have moved createdToken from LoginEndPoint into its own class
 // so we can use the methods in more than just one endpoint

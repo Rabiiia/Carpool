@@ -1,7 +1,6 @@
 package rest;
 
 import com.google.gson.Gson;
-import com.nimbusds.jose.shaded.json.JSONUtil;
 import dtos.ChuckDTO;
 import dtos.DadJokeDTO;
 
