@@ -1,8 +1,11 @@
 package entities;
 
+import dtos.Waypoint;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -14,22 +17,26 @@ public class Ride {
     @Column(name = "ride_id", nullable = false)
     private Integer id;
 
-    @Size(max = 45)
-    @NotNull
+    /*
     @Column(name = "driver", nullable = false, length = 45)
-    private String driver;
+    */
+    @NotNull
+    @ManyToOne
+    @JoinTable(name = "users",
+            joinColumns = @JoinColumn(name = "driver_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private User driver;
 
-    @Size(max = 45)
     @NotNull
     @Column(name = "seats", nullable = false, length = 45)
-    private String seats;
+    private int seats;
 
-    @Size(max = 45)
+    //@Size(max = 45)
     @NotNull
     @Column(name = "origin", nullable = false, length = 45)
     private String origin;
 
-    @Size(max = 45)
+    //@Size(max = 45)
     @NotNull
     @Column(name = "destination", nullable = false, length = 45)
     private String destination;
@@ -37,15 +44,23 @@ public class Ride {
     @Size(max = 45)
     @NotNull
     @Column(name = "arrival_time", nullable = false, length = 45)
-    private String arrivalTime;
+    private long arrivalTime;
 
     @ManyToMany
     @JoinTable(name = "passengers",
             joinColumns = @JoinColumn(name = "ride_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<User> passengers = new LinkedHashSet<>();
 
     public Ride() {
+    }
+
+    public Ride(Waypoint origin, Waypoint destination, long arrival, int seats, User driver) {
+        this.origin = origin.getLng()+","+origin.getLat();
+        this.destination = destination.getLng()+","+destination.getLat();
+        this.arrivalTime = arrival;
+        this.seats = seats;
+        this.driver = driver;
     }
 
     public Integer getId() {
@@ -56,19 +71,19 @@ public class Ride {
         this.id = id;
     }
 
-    public String getDriver() {
+    public User getDriver() {
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public void setDriver(User driver) {
         this.driver = driver;
     }
 
-    public String getSeats() {
+    public int getSeats() {
         return seats;
     }
 
-    public void setSeats(String seats) {
+    public void setSeats(int seats) {
         this.seats = seats;
     }
 
@@ -88,20 +103,19 @@ public class Ride {
         this.destination = destination;
     }
 
-    public String getArrivalTime() {
+    public long getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(String arrivalTime) {
+    public void setArrivalTime(long arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<User> getPassengers() {
+        return passengers;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setPassengers(Set<User> users) {
+        this.passengers = users;
     }
-
 }
