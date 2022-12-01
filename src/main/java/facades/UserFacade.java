@@ -93,7 +93,6 @@ public class UserFacade {
         } finally {
             em.close();
         }
-
         return user;
     }
 }

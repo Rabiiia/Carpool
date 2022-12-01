@@ -108,4 +108,19 @@ public class UserRessourceTest {
 
     }
 
+    @Test
+    public void testGetSpecificUser() {
+        given()
+                .contentType("application/json")
+                .when()
+                .get("/info/1").then()
+                .statusCode(200)
+                .body("username", equalTo("admin"))
+                .body("address",equalTo("Liljevej 13"))
+                .body("name", equalTo("Konrad"))
+                .body("phone",equalTo(30303030))
+                .body("role", equalTo("admin"))
+                .body("zipcode",equalTo(2900));
+    }
+
 }

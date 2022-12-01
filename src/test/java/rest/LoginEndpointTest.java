@@ -209,4 +209,6 @@ public class LoginEndpointTest {
                 .body("message", equalTo("Not authenticated - do login"));
     }
 
+
+
 }
