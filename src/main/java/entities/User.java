@@ -78,7 +78,6 @@ public class User {
         return BCrypt.checkpw(pw, password);
     }
 
-
     public Integer getId() {
         return id;
     }
@@ -150,8 +149,4 @@ public class User {
     public void setRides(Set<Ride> rides) {
         this.rides = rides;
     }
-
-
-
-
 }

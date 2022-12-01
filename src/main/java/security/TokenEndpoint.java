@@ -39,15 +39,15 @@ public class TokenEndpoint {
             JWSVerifier verifier = new MACVerifier(SharedSecret.getSharedKey());
             if (signedJWT.verify(verifier)) {
                 if (new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime()) {
-                    throw new AuthenticationException("Your Token is no longer valid");
+                    throw new AuthenticationException("Token is no longer valid");
                 }
             }
             System.out.println("Token is valid");
-            String username = signedJWT.getJWTClaimsSet().getSubject(); // or .getClaim("username").toString();
-            User user = USER_FACADE.getUser(username);
-            SignedJWT renewedToken = Token.createToken(username, user.getRole());
+            String id = signedJWT.getJWTClaimsSet().getSubject(); // or .getClaim("username").toString();
+            User user = USER_FACADE.getUser(id);
+            SignedJWT renewedToken = Token.createToken(user);
             JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("username", username);
+            responseJson.addProperty("username", user.getUsername());
             responseJson.addProperty("token", renewedToken.serialize());
             return Response.ok(responseJson.toString()).build();
         } catch (ParseException e) {
