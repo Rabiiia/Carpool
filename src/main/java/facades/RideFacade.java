@@ -33,7 +33,7 @@ public class RideFacade {
         return instance;
     }
 
-    public Ride createRide(int driverId, Waypoint origin, Waypoint destination, long arrival, byte seats) {
+    public Ride createRide(int driverId, String origin, String destination, long arrival, byte seats) {
         Ride ride = null;
         User driver;
         EntityManager em = EMF.createEntityManager();

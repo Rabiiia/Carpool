@@ -83,7 +83,6 @@ public class UserFacade {
         try {
             em.getTransaction().begin();
             em.persist(user);
-
             em.getTransaction().commit();
         } catch (PersistenceException e) {
             throw new API_Exception("Could not create user", 500, e);

@@ -32,21 +32,24 @@ public class RideEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createRide(@HeaderParam("x-access-token") String jwtString, String jsonString) throws API_Exception, AuthenticationException {
         System.out.println("Given: " + jsonString);
-        Waypoint origin, destination;
+        String origin, destination;
+        //Waypoint origin, destination;
         long arrival;
         byte seats;
 
         try {
             // Extract values from JSON
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
-            origin = new Waypoint(
+            origin = json.get("origin").getAsString();
+            destination = json.get("destination").getAsString();
+            /*origin = new Waypoint(
                 json.get("origLng").getAsFloat(),
                 json.get("origLat").getAsFloat()
             );
             destination = new Waypoint(
                 json.get("destLat").getAsFloat(),
                 json.get("destLng").getAsFloat()
-            );
+            );*/
             arrival = json.get("arrival").getAsLong();
             seats = json.get("seats").getAsByte();
         } catch (JsonSyntaxException e) {

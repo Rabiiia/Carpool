@@ -56,9 +56,9 @@ public class Ride {
         this.id = id;
     }
 
-    public Ride(Waypoint origin, Waypoint destination, long arrival, byte seats, User driver) {
-        this.origin = origin.getLng()+","+origin.getLat();
-        this.destination = destination.getLng()+","+destination.getLat();
+    public Ride(String origin, String destination, long arrival, byte seats, User driver) {
+        this.origin = origin;
+        this.destination = destination;
         this.arrivalTime = arrival;
         this.seats = seats;
         this.driver = driver;

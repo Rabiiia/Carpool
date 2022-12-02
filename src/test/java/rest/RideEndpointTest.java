@@ -24,7 +24,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.*;
 
-public class UserEndpointTest {
+public class RideEndpointTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
@@ -33,6 +33,8 @@ public class UserEndpointTest {
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    private static String securityToken;
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -65,27 +67,53 @@ public class UserEndpointTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+        String username = "user";
+        String password = "test123";
         try {
-
             em.getTransaction().begin();
-            //Delete existing users and roles to get a "fresh" database
-            //em.createNamedQuery("User.deleteAllRows").executeUpdate();
-            //User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
-
-            User admin = new User("admin", "test","Konrad", 30303030, "Liljevej 13", 2900);
-
-            //admin.setRole("admin");
-            //em.persist(user);
-            em.persist(admin);
-
-            //System.out.println("Saved test data to database");
+            em.createQuery("delete from User").executeUpdate();
+                User user = new User(username, password,"Mogens", 20202020, "Værebrovej 18", 2880);
+            em.persist(user);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
+
+        String json = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
+        securityToken = given()
+                .contentType("application/json")
+                .body(json)
+                //.when().post("/api/login")
+                .when().post("/login")
+                .then()
+                .extract().path("token");
+        System.out.println("TOKEN ---> " + securityToken);
+
     }
 
-    @Test
+    public void postRidesTest() {
+        User user = new User("TestUserName", "testPassword","testName", 999999, "testAddress", 9990);
+
+        String requestBody = GSON.toJson(user);
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .and()
+                .body(requestBody)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(200);
+        //.body("id", notNullValue()) //
+        //.body(JsonPath."name", equalTo("testName"));
+        //.body("role", equalTo("user"));
+
+    }
+
+
+
+    /*@Test
     public void postTest() {
         User user = new User("TestUserName", "testPassword","testName", 999999, "testAddress", 9990);
 
@@ -101,9 +129,9 @@ public class UserEndpointTest {
                 .then()
                 .assertThat()
                 .statusCode(200);
-                //.body("id", notNullValue()) //
-                //.body(JsonPath."name", equalTo("testName"));
-                //.body("role", equalTo("user"));
+        //.body("id", notNullValue()) //
+        // .body(JsonPath."name", equalTo("testName"));
+        //.body("role", equalTo("user"));
 
     }
 
@@ -119,8 +147,8 @@ public class UserEndpointTest {
                 .body("address",equalTo("Liljevej 13"))
                 .body("name", equalTo("Konrad"))
                 .body("phone",equalTo(30303030))
-                .body("role", equalTo("user"))
+                .body("role", equalTo("admin"))
                 .body("zipcode",equalTo(2900));
-    }
+    }*/
 
 }
