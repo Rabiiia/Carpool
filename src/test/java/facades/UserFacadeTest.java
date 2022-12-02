@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 class UserFacadeTest {
 
     private static EntityManagerFactory EMF;
@@ -35,7 +34,7 @@ class UserFacadeTest {
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("User.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Users.deleteAllRows").executeUpdate();
             u1 = new User("testUserName", "test123","Mogens", 20202020, "Værebrovej 18", 2880);
             em.persist(u1);
             em.getTransaction().commit();

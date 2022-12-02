@@ -9,10 +9,7 @@ import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
@@ -59,27 +56,21 @@ public class UserEndpointTest {
 
         httpServer.shutdownNow();
     }
+    int userId;
 
     // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
     //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
+
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         try {
-
             em.getTransaction().begin();
-            //Delete existing users and roles to get a "fresh" database
-            //em.createNamedQuery("User.deleteAllRows").executeUpdate();
-            //User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
-
-            User admin = new User("admin", "test","Konrad", 30303030, "Liljevej 13", 2900);
-
-            //admin.setRole("admin");
-            //em.persist(user);
-            em.persist(admin);
-
-            //System.out.println("Saved test data to database");
+            em.createNamedQuery("Users.deleteAllRows").executeUpdate();
+            User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
+            em.persist(user);
             em.getTransaction().commit();
+            userId = user.getId();
         } finally {
             em.close();
         }
@@ -87,7 +78,7 @@ public class UserEndpointTest {
 
     @Test
     public void postTest() {
-        User user = new User("TestUserName", "testPassword","testName", 999999, "testAddress", 9990);
+        User user = new User("testUserName", "testPassword","testName", 999999, "testAddress", 9990);
 
 
         String requestBody = GSON.toJson(user);
@@ -113,14 +104,14 @@ public class UserEndpointTest {
         given()
                 .contentType("application/json")
                 .when()
-                .get("/users/2").then()
+                .get("/users/"+userId).then()
                 .statusCode(200)
-                .body("username", equalTo("admin"))
-                .body("address",equalTo("Liljevej 13"))
-                .body("name", equalTo("Konrad"))
-                .body("phone",equalTo(30303030))
+                .body("username", equalTo("user"))
+                .body("address",equalTo("Værebrovej 18"))
+                .body("name", equalTo("Mogens"))
+                .body("phone",equalTo(20202020))
                 .body("role", equalTo("user"))
-                .body("zipcode",equalTo(2900));
+                .body("zipcode",equalTo(2880));
     }
 
 }
