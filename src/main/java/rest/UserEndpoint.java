@@ -10,13 +10,11 @@ import facades.UserFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 @Path("users")
-public class UserResource {
+public class UserEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -43,6 +41,15 @@ public class UserResource {
         UserDTO user = new UserDTO(USER_FACADE.createUser(username, password, name, phone, address, zipcode));
         String userJSON = GSON.toJson(user);
         System.out.println(userJSON);
+        return Response.ok(userJSON).build();
+    }
+
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{id}")
+    public Response getSpecificUser(@PathParam("id") int id) {
+        String userJSON = GSON.toJson(new UserDTO(USER_FACADE.getUserById(id)));
         return Response.ok(userJSON).build();
     }
 }
