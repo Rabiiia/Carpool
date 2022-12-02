@@ -3,9 +3,6 @@ package security;
 import entities.User;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class UserPrincipal implements Principal {
 

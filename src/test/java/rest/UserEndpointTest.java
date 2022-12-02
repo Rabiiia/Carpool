@@ -2,7 +2,6 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dtos.UserDTO;
 import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -25,7 +24,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.*;
 
-public class UserRessourceTest {
+public class UserEndpointTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
@@ -90,30 +89,31 @@ public class UserRessourceTest {
     public void postTest() {
         User user = new User("TestUserName", "testPassword","testName", 999999, "testAddress", 9990);
 
-        UserDTO udto = new UserDTO(user);
-        String requestBody = GSON.toJson(udto);
+
+        String requestBody = GSON.toJson(user);
 
         given()
                 .header("Content-type", ContentType.JSON)
                 .and()
                 .body(requestBody)
                 .when()
-                .post("/user")
+                .post("/users")
                 .then()
                 .assertThat()
                 .statusCode(200);
                 //.body("id", notNullValue()) //
-                //.body("name", equalTo("testName"))
+               // .body(JsonPath."name", equalTo("testName"));
                 //.body("role", equalTo("user"));
 
     }
 
     @Test
     public void testGetSpecificUser() {
+
         given()
                 .contentType("application/json")
                 .when()
-                .get("/info/1").then()
+                .get("/users/2").then()
                 .statusCode(200)
                 .body("username", equalTo("admin"))
                 .body("address",equalTo("Liljevej 13"))

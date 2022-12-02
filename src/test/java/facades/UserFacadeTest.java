@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import entities.User;
 import errorhandling.API_Exception;
 import org.junit.jupiter.api.*;
-import rest.DemoResource;
 import utils.EMF_Creator;
 
 
@@ -20,12 +19,7 @@ class UserFacadeTest {
     private static UserFacade USER_FACADE;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-
     User u1;
-
-
-
     @BeforeAll
     public static void setUpClass() {
         EMF = EMF_Creator.createEntityManagerFactoryForTest();
@@ -57,7 +51,6 @@ class UserFacadeTest {
     @Test
     void createUser() throws API_Exception {
 
-       // User user = new User("testUserName", "test123","Mogens", 20202020, "Værebrovej 18", 2880);
         User actual = USER_FACADE.createUser("testUserName", "test12","testName", 000000, "testAddress", 9990);
         assertTrue(actual.getId()!=0);
         System.out.println(actual.getId()); //should print 2 meaning second index in the list

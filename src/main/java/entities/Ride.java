@@ -5,46 +5,42 @@ import dtos.Waypoint;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "ride")
+@Table(name = "rides")
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ride_id", nullable = false)
     private Integer id;
 
-    /*
-    @Column(name = "driver", nullable = false, length = 45)
-    */
     @NotNull
-    @ManyToOne
-    @JoinTable(name = "users",
-            joinColumns = @JoinColumn(name = "driver_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "driver_id", nullable = false)
     private User driver;
 
-    @NotNull
-    @Column(name = "seats", nullable = false, length = 45)
-    private int seats;
-
-    //@Size(max = 45)
-    @NotNull
-    @Column(name = "origin", nullable = false, length = 45)
-    private String origin;
-
-    //@Size(max = 45)
+    @Size(max = 45)
     @NotNull
     @Column(name = "destination", nullable = false, length = 45)
     private String destination;
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "arrival_time", nullable = false, length = 45)
-    private long arrivalTime;
+    @Column(name = "origin", nullable = false, length = 45)
+    private String origin;
+
+    @NotNull
+    @Column(name = "arrival_time", nullable = false)
+    private Long arrivalTime;
+
+    @NotNull
+    @Column(name = "seats", nullable = false)
+    private Byte seats;
+
+    @OneToMany(mappedBy = "ride")
+    private Set<Request> requests = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "passengers",
@@ -52,10 +48,15 @@ public class Ride {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> passengers = new LinkedHashSet<>();
 
+
     public Ride() {
     }
 
-    public Ride(Waypoint origin, Waypoint destination, long arrival, int seats, User driver) {
+    public Ride(int id) {
+        this.id = id;
+    }
+
+    public Ride(Waypoint origin, Waypoint destination, long arrival, byte seats, User driver) {
         this.origin = origin.getLng()+","+origin.getLat();
         this.destination = destination.getLng()+","+destination.getLat();
         this.arrivalTime = arrival;
@@ -79,12 +80,12 @@ public class Ride {
         this.driver = driver;
     }
 
-    public int getSeats() {
-        return seats;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setSeats(int seats) {
-        this.seats = seats;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public String getOrigin() {
@@ -95,20 +96,28 @@ public class Ride {
         this.origin = origin;
     }
 
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    public long getArrivalTime() {
+    public Long getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(long arrivalTime) {
+    public void setArrivalTime(Long arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public Byte getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Byte seats) {
+        this.seats = seats;
+    }
+
+    public Set<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(Set<Request> requests) {
+        this.requests = requests;
     }
 
     public Set<User> getPassengers() {
@@ -118,4 +127,5 @@ public class Ride {
     public void setPassengers(Set<User> users) {
         this.passengers = users;
     }
+
 }

@@ -1,16 +1,15 @@
 package security;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import entities.User;
+import security.errorhandling.AuthenticationException;
 
+import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 // We have moved createdToken from LoginEndPoint into its own class
 // so we can use the methods in more than just one endpoint
@@ -30,6 +29,18 @@ public class Token {
                 .build();
         SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
         signedJWT.sign(signer);
+        return signedJWT;
+    }
+
+    public static SignedJWT getVerifiedToken(String jwtString) throws ParseException, JOSEException, AuthenticationException {
+        SignedJWT signedJWT = SignedJWT.parse(jwtString);
+        JWSVerifier verifier = new MACVerifier(SharedSecret.getSharedKey());
+        if (signedJWT.verify(verifier)) {
+            if (new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime()) {
+                throw new AuthenticationException("The provided token is not valid");
+            }
+            System.out.println("Token is valid");
+        }
         return signedJWT;
     }
 }
