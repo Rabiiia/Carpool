@@ -14,19 +14,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
-import java.util.List;
 
-
-@Path("user")
+@Path("users")
 public class UserResource {
-
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-
-
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -52,5 +45,4 @@ public class UserResource {
         System.out.println(userJSON);
         return Response.ok(userJSON).build();
     }
-
 }

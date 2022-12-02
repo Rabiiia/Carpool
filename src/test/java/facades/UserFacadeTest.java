@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import entities.User;
 import errorhandling.API_Exception;
 import org.junit.jupiter.api.*;
-import rest.DemoResource;
 import utils.EMF_Creator;
 
 
@@ -20,12 +19,7 @@ class UserFacadeTest {
     private static UserFacade USER_FACADE;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-
     User u1;
-
-
-
     @BeforeAll
     public static void setUpClass() {
         EMF = EMF_Creator.createEntityManagerFactoryForTest();

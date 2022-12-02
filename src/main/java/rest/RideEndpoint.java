@@ -5,25 +5,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import dtos.RideDTO;
-import entities.Ride;
 import dtos.Waypoint;
 import errorhandling.API_Exception;
 import facades.RideFacade;
-import security.SharedSecret;
+import security.Token;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
-import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("rides")
 public class RideEndpoint {
@@ -58,29 +55,35 @@ public class RideEndpoint {
         }
 
         try {
-            // Verify token
-            SignedJWT signedJWT = SignedJWT.parse(jwtString);
-            JWSVerifier verifier = new MACVerifier(SharedSecret.getSharedKey());
-            if (signedJWT.verify(verifier)) {
-                if (new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime()) {
-                    throw new AuthenticationException("The provided token is not valid");
-                }
-                System.out.println("Token is valid");
-            }
-            // Create ride
-            Ride ride = RIDE_FACADE.createRide(Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()),
+            SignedJWT signedJWT = Token.getVerifiedToken(jwtString);
+            RideDTO ride = new RideDTO(RIDE_FACADE.createRide(Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()),
                     origin,
                     destination,
                     arrival,
-                    seats);
-            // Build response
-            String jsonResponse = new Gson().toJson(new RideDTO(ride));
-            System.out.println(jsonResponse);
-            return Response.ok(jsonResponse).build();
+                    seats));
+            System.out.println(ride);
+            return Response.ok(new Gson().toJson(ride)).build();
         } catch (ParseException e) {
             throw new API_Exception("Could not parse token", 500, e);
         } catch (JOSEException e) {
             throw new API_Exception("Could not verify token", 500, e);
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllRides() {
+        List<RideDTO> rides = RIDE_FACADE.getAllRides().stream().map(RideDTO::new).collect(Collectors.toList());
+        System.out.println(rides);
+        return Response.ok(new Gson().toJson(rides)).build();
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRide(@PathParam("id") int id) {
+        RideDTO ride = new RideDTO(RIDE_FACADE.getRide(id));
+        System.out.println(ride);
+        return Response.ok(new Gson().toJson(ride)).build();
     }
 }

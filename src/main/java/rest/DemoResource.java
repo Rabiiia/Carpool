@@ -1,7 +1,6 @@
 package rest;
 
 import com.google.gson.Gson;
-import com.nimbusds.jose.shaded.json.JSONUtil;
 import dtos.ChuckDTO;
 import dtos.DadJokeDTO;
 
@@ -30,6 +29,7 @@ public class DemoResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private final Gson gson = new Gson();
+
     @Context
     private UriInfo context;
 

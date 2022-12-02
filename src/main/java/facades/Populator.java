@@ -7,7 +7,6 @@ package facades;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceException;
 
 import entities.User;
 import utils.EMF_Creator;

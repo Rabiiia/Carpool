@@ -1,11 +1,9 @@
 package security;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nimbusds.jose.*;
 import com.nimbusds.jwt.SignedJWT;
-import dtos.UserDTO;
 import entities.User;
 import facades.UserFacade;
 
