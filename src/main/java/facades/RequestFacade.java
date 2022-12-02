@@ -43,7 +43,6 @@ public class RequestFacade {
     }
 
     public void updateRequest(int rideId, int userId, String status) {
-        //Request request = new Request(rideId, userId, status);
 
         EntityManager em = EMF.createEntityManager();
         try {

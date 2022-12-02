@@ -7,6 +7,7 @@ public class UserDTO {
     String username;
     String address;
     int phone;
+
     int zipcode;
     String name;
     String role;
@@ -14,8 +15,8 @@ public class UserDTO {
     public UserDTO(User user) {
         if(user.getId() != null)
             this.id = user.getId();
-        this.username = user.getName();
-        this.name = user.getUsername();
+        this.username = user.getUsername();
+        this.name = user.getName();
         this.phone = user.getPhone();
         this.address = user.getAddress();
         this.zipcode = user.getZipcode();

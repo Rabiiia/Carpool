@@ -51,7 +51,6 @@ class UserFacadeTest {
     @Test
     void createUser() throws API_Exception {
 
-       // User user = new User("testUserName", "test123","Mogens", 20202020, "Værebrovej 18", 2880);
         User actual = USER_FACADE.createUser("testUserName", "test12","testName", 000000, "testAddress", 9990);
         assertTrue(actual.getId()!=0);
         System.out.println(actual.getId()); //should print 2 meaning second index in the list

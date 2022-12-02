@@ -72,12 +72,9 @@ public class UserFacade {
     }
 
 
-    // Det er rart at returnere et User objekt i stedet for UserDTO, fordi vi i fremtiden kan det være at vi laver
-    // addRole metode. så kalder jeg createUser metoden så kan jeg lige efter bruge addRole metoden som også
-    // retunere et User entitiy objekt.
-    // når man så er færdig med at samlet User objekt, så kan jeg lave det om til UserDTO.
-    // LIGE NU bruger vi createUser metoden som returnerer et entity objekt, men det bliver lavet om til userDTO i Userresource i rest
+
     public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode) throws API_Exception {
+
         // Construct user:
         User user = new User(username, password, name, phone, address, zipcode);
 
@@ -94,5 +91,15 @@ public class UserFacade {
             em.close();
         }
         return user;
+    }
+
+    public User getUserById(int id) {
+        EntityManager em = EMF.createEntityManager();
+        try {
+            User user = em.find(entities.User.class, id);
+            return user;
+        } finally {
+            em.close();
+        }
     }
 }

@@ -33,7 +33,6 @@ public class RideEndpoint {
     public Response createRide(@HeaderParam("x-access-token") String jwtString, String jsonString) throws API_Exception, AuthenticationException {
         System.out.println("Given: " + jsonString);
         Waypoint origin, destination;
-        float origLng, origLat, destLng, destLat;
         long arrival;
         byte seats;
 
@@ -41,12 +40,12 @@ public class RideEndpoint {
             // Extract values from JSON
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
             origin = new Waypoint(
-                    0,//json.get("origLng").getAsFloat(),
-                    0 //json.get("origLat").getAsFloat()
+                json.get("origLng").getAsFloat(),
+                json.get("origLat").getAsFloat()
             );
             destination = new Waypoint(
-                    0,//json.get("destLat").getAsFloat(),
-                    0 //json.get("destLng").getAsFloat()
+                json.get("destLat").getAsFloat(),
+                json.get("destLng").getAsFloat()
             );
             arrival = json.get("arrival").getAsLong();
             seats = json.get("seats").getAsByte();
@@ -56,7 +55,8 @@ public class RideEndpoint {
 
         try {
             SignedJWT signedJWT = Token.getVerifiedToken(jwtString);
-            RideDTO ride = new RideDTO(RIDE_FACADE.createRide(Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()),
+            RideDTO ride = new RideDTO(RIDE_FACADE.createRide(
+                    Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()),
                     origin,
                     destination,
                     arrival,
