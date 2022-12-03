@@ -1,9 +1,12 @@
 package facades;
 
 import entities.Request;
+import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class RequestFacade {
     private static RequestFacade instance;
@@ -33,6 +36,19 @@ public class RequestFacade {
             em.getTransaction().begin();
             em.persist(new Request(rideId, userId, status));
             em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Request> getRequests(int userId) {
+        EntityManager em = EMF.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            TypedQuery<Request> query = em.createQuery("SELECT r FROM Request r WHERE r.user.id = :uid", Request.class);
+            query.setParameter("uid", userId);
+            em.getTransaction().commit();
+            return query.getResultList();
         } finally {
             em.close();
         }
