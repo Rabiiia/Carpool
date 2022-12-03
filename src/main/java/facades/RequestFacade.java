@@ -4,8 +4,6 @@ import entities.Request;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
-import java.util.stream.Collectors;
 
 public class RequestFacade {
     private static RequestFacade instance;
@@ -30,28 +28,22 @@ public class RequestFacade {
     }
 
     public void sendRequest(int rideId, int userId, String status) {
-        Request request = new Request(rideId, userId, status);
-
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(request);
+            em.persist(new Request(rideId, userId, status));
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
 
-    public void updateRequest(int rideId, int userId, String status) {
-
+    public void updateRequest(int id, String status) {
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            TypedQuery<Request> query = em.createQuery("SELECT r FROM Request r WHERE r.user.id = :uid AND r.ride.id = :rid AND r.status = :status", Request.class);
-            query.setParameter("uid", userId);
-            query.setParameter("rid", rideId);
-            query.setParameter("status", "pending");
-            for (Request request : query.getResultList()) {
+            Request request = em.find(Request.class, id);
+            if (request != null) {
                 request.setStatus(status);
                 em.merge(request);
             }

@@ -10,32 +10,30 @@ import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 import java.text.ParseException;
 
-@Path("requests")
+@Path("rides/{rideId}/requests")
 public class RequestEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final RequestFacade REQUEST_FACADE = RequestFacade.getInstance(EMF);
+    @PathParam("rideId")
+    private int rideId;
 
     @POST
-    @Path("{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void requestSeat(@PathParam("id") int id, @HeaderParam("x-access-token") String token, String jsonString) throws AuthenticationException, ParseException, JOSEException {
+    //@Consumes(MediaType.APPLICATION_JSON)
+    public void requestSeat(@HeaderParam("x-access-token") String token/*, String jsonString*/) throws AuthenticationException, ParseException, JOSEException {
         SignedJWT signedJWT = Token.getVerifiedToken(token);
+        int userId = Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject());
         String status = "pending";
-        //String status = JsonParser.parseString(jsonString).getAsJsonObject().get("status").getAsString();
-        REQUEST_FACADE.sendRequest(id, Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()), status);
+        REQUEST_FACADE.sendRequest(rideId, userId, status);
     }
 
-    @PUT
+    @PATCH
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void acceptPassenger(@PathParam("id") int id, @HeaderParam("x-access-token") String token, String jsonString) throws AuthenticationException, ParseException, JOSEException {
-        SignedJWT signedJWT = Token.getVerifiedToken(token);
+    public void respondToRequest(@PathParam("id") int id, String jsonString) throws AuthenticationException, ParseException, JOSEException {
         String status = JsonParser.parseString(jsonString).getAsJsonObject().get("status").getAsString();
-        REQUEST_FACADE.updateRequest(id, Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject()), status);
+        REQUEST_FACADE.updateRequest(id, status);
     }
 }
