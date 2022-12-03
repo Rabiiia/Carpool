@@ -28,11 +28,13 @@ public class RequestEndpoint {
 
     @POST
     //@Consumes(MediaType.APPLICATION_JSON)
-    public void requestSeat(@HeaderParam("x-access-token") String token/*, String jsonString*/) throws AuthenticationException, ParseException, JOSEException {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response requestSeat(@HeaderParam("x-access-token") String token/*, String jsonString*/) throws AuthenticationException, ParseException, JOSEException {
         SignedJWT signedJWT = Token.getVerifiedToken(token);
         int userId = Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject());
         String status = "pending";
-        REQUEST_FACADE.sendRequest(rideId, userId, status);
+        RequestDTO request = new RequestDTO(REQUEST_FACADE.sendRequest(rideId, userId, status));
+        return Response.ok(new Gson().toJson(request)).build();
     }
 
     @GET
@@ -50,8 +52,10 @@ public class RequestEndpoint {
     @PATCH
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void respondToRequest(@PathParam("id") int id, String jsonString) throws AuthenticationException, ParseException, JOSEException {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response respondToRequest(@PathParam("id") int id, String jsonString) throws AuthenticationException, ParseException, JOSEException {
         String status = JsonParser.parseString(jsonString).getAsJsonObject().get("status").getAsString();
-        REQUEST_FACADE.updateRequest(id, status);
+        RequestDTO request = new RequestDTO(REQUEST_FACADE.updateRequest(id, status));
+        return Response.ok(new Gson().toJson(request)).build();
     }
 }
