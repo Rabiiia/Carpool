@@ -30,12 +30,14 @@ public class RequestFacade {
         return instance;
     }
 
-    public void sendRequest(int rideId, int userId, String status) {
+    public Request sendRequest(int rideId, int userId, String status) {
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(new Request(rideId, userId, status));
+            Request request = new Request(rideId, userId, status);
+            em.persist(request);
             em.getTransaction().commit();
+            return request;
         } finally {
             em.close();
         }
@@ -54,7 +56,7 @@ public class RequestFacade {
         }
     }
 
-    public void updateRequest(int id, String status) {
+    public Request updateRequest(int id, String status) {
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -64,6 +66,7 @@ public class RequestFacade {
                 em.merge(request);
             }
             em.getTransaction().commit();
+            return request;
         } finally {
             em.close();
         }
