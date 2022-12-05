@@ -62,6 +62,12 @@ public class User {
     @OneToMany(mappedBy = "driver")
     private Set<Ride> ridesCreated = new LinkedHashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id")
+    private School school;
+
+
+
 
     public User() {
     }
@@ -176,4 +182,11 @@ public class User {
         this.ridesCreated = ridesCreated;
     }
 
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
 }
