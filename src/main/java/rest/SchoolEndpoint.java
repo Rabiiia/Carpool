@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dtos.RideDTO;
 import dtos.SchoolDTO;
 import dtos.UserDTO;
 import errorhandling.API_Exception;
@@ -15,6 +16,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("schools")
 public class SchoolEndpoint {
@@ -40,12 +43,13 @@ public class SchoolEndpoint {
 
     }
 
-    @Path("/all")
+
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getAll() {
-        return Response.ok().entity(GSON.toJson(SCHOOL_FACADE.getAll())).build();
-
+    public Response getAllSchools() {
+        List<SchoolDTO> schools = SCHOOL_FACADE.getAll().stream().map(SchoolDTO::new).collect(Collectors.toList());
+        System.out.println(schools);
+        return Response.ok(new Gson().toJson(schools)).build();
     }
 
 
