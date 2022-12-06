@@ -23,6 +23,7 @@ public class UserDTO {
         this.address = user.getAddress();
         this.zipcode = user.getZipcode();
         this.role = user.getRole();
+        this.schoolId = user.getSchool().getId();
     }
 
     public UserDTO(String username, String password, String address, int phone, int zipcode, String name, String role, int schoolId) {

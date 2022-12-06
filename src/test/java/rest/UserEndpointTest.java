@@ -74,6 +74,7 @@ public class UserEndpointTest {
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
             User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
             s1 = new School("testSchoolName", "testSchoolLocation");
+
 //
 //            // persist user
 //            em.persist(user);
@@ -125,6 +126,7 @@ public class UserEndpointTest {
                 .body("phone",equalTo(20202020))
                 .body("role", equalTo("user"))
                 .body("zipcode",equalTo(2880));
+
     }
 
 }
