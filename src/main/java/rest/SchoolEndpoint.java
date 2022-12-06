@@ -33,7 +33,7 @@ public class SchoolEndpoint {
         String name, location;
 
         JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-        name = jsonObject.get("name").getAsString();
+        name = jsonObject.get("schoolName").getAsString();
         location = jsonObject.get("location").getAsString();
 
         SchoolDTO school = new SchoolDTO(SCHOOL_FACADE.createSchool(name, location));

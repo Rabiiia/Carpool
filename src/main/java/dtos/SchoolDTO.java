@@ -11,9 +11,13 @@ public class SchoolDTO {
 
 
     public SchoolDTO(School school) {
-        if(school.getId() != null)
-            this.id = school.getId();
+        if(school.getId() != null) this.id = school.getId();
         this.schoolName = school.getName();
         this.location = school.getLocation();
+    }
+
+    public SchoolDTO(String schoolName, String location) {
+        this.schoolName = schoolName;
+        this.location = location;
     }
 }

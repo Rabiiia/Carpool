@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.SchoolDTO;
 import entities.School;
 import entities.User;
 import io.restassured.RestAssured;
@@ -76,7 +77,7 @@ public class SchoolEndpointTest {
 
     @Test
     public void postTest() {
-        School school = new School("DTU", "Kongens Lyngby");
+        SchoolDTO school = new SchoolDTO("DTU", "Kongens Lyngby");
 
 
         String requestBody = GSON.toJson(school);
