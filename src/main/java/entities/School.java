@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
+@NamedQuery(name = "School.deleteAllRows", query = "DELETE FROM School")
 public class School {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +26,25 @@ public class School {
 
     @OneToMany(mappedBy = "school")
     private Set<User> users = new LinkedHashSet<>();
+
+    public School() {
+    }
+
+    public School(String name, String location) {
+        this.name = name;
+        this.location = location;
+    }
+
+
+    // Syncronizing with user object
+    public void addUser(User user) {
+        if (user != null) {
+            this.users.add(user);
+            user.setSchool(this);
+        } else {
+            this.users = null;
+        }
+    }
 
     public Integer getId() {
         return id;
@@ -50,12 +70,12 @@ public class School {
         this.location = location;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
+//    public Set<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
 
 }

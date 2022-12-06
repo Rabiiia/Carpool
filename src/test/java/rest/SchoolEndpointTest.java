@@ -2,7 +2,6 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dtos.UserDTO;
 import entities.School;
 import entities.User;
 import io.restassured.RestAssured;
@@ -11,7 +10,10 @@ import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
@@ -20,15 +22,11 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.Matchers.*;
 
-public class UserEndpointTest {
+public class SchoolEndpointTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-
-    School s1;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -60,30 +58,17 @@ public class UserEndpointTest {
 
         httpServer.shutdownNow();
     }
-    int userId;
-
-    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
 
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("Users.deleteAllRows").executeUpdate();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-            User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
-            s1 = new School("testSchoolName", "testSchoolLocation");
-//
-//            // persist user
-//            em.persist(user);
-//            // add user to school
-//            school.addUser(user);
-//            // persist school
-             em.persist(s1);
-
+            School school = new School("testSchoolName", "testSchoolLocation");
+            em.persist(school);
             em.getTransaction().commit();
-            //userId = user.getId();
+            //schoolId = school.getId();
         } finally {
             em.close();
         }
@@ -91,41 +76,23 @@ public class UserEndpointTest {
 
     @Test
     public void postTest() {
-        User user = new User("testUserName", "testPassword","testName", 999999, "testAddress", 9990);
-        //School school = new School("testSchoolName", "testLocation");
-        user.setSchool(s1);
+        School school = new School("DTU", "Kongens Lyngby");
 
-        String requestBody = GSON.toJson(new UserDTO(user));
+
+        String requestBody = GSON.toJson(school);
 
         given()
                 .header("Content-type", ContentType.JSON)
                 .and()
                 .body(requestBody)
                 .when()
-                .post("/users")
+                .post("/schools")
                 .then()
                 .assertThat()
                 .statusCode(200);
-                //.body("id", notNullValue()) //
-                //.body(JsonPath."name", equalTo("testName"));
-                //.body("role", equalTo("user"));
+        //.body("id", notNullValue()) //
+        //.body(JsonPath."name", equalTo("testName"));
+        //.body("role", equalTo("user"));
 
     }
-
-    @Test
-    public void testGetSpecificUser() {
-
-        given()
-                .contentType("application/json")
-                .when()
-                .get("/users/"+userId).then()
-                .statusCode(200)
-                .body("username", equalTo("user"))
-                .body("address",equalTo("Værebrovej 18"))
-                .body("name", equalTo("Mogens"))
-                .body("phone",equalTo(20202020))
-                .body("role", equalTo("user"))
-                .body("zipcode",equalTo(2880));
-    }
-
 }
