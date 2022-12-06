@@ -21,8 +21,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 
 public class SchoolEndpointTest {
 
@@ -33,6 +38,8 @@ public class SchoolEndpointTest {
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    School s1, s2;
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -63,13 +70,15 @@ public class SchoolEndpointTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+        s1 = new School("testSchoolName", "testSchoolLocation");
+        s2 = new School("testSchoolName2", "testSchoolLocation2");
+
         try {
             em.getTransaction().begin();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-            School school = new School("testSchoolName", "testSchoolLocation");
-            em.persist(school);
+            em.persist(s1);
+            em.persist(s2);
             em.getTransaction().commit();
-            //schoolId = school.getId();
         } finally {
             em.close();
         }
@@ -78,8 +87,6 @@ public class SchoolEndpointTest {
     @Test
     public void postTest() {
         SchoolDTO school = new SchoolDTO("DTU", "Kongens Lyngby");
-
-
         String requestBody = GSON.toJson(school);
 
         given()
@@ -90,10 +97,27 @@ public class SchoolEndpointTest {
                 .post("/schools")
                 .then()
                 .assertThat()
-                .statusCode(200);
-        //.body("id", notNullValue()) //
-        //.body(JsonPath."name", equalTo("testName"));
-        //.body("role", equalTo("user"));
+                .statusCode(200)
+                .extract().body().jsonPath().getJsonObject("schoolName");
+                //.body("name", equalTo("testName"));//.body("role", equalTo("user"));
+
+
+    }
+
+    @Test
+    public void getAll() throws Exception {
+        List<SchoolDTO> schoolDTOS;
+
+        schoolDTOS = given()
+                .contentType("application/json")
+                .when()
+                .get("/schools/all")
+                .then()
+                .extract().body().jsonPath().getList("", SchoolDTO.class);
+
+        SchoolDTO s1DTO = new SchoolDTO(s1);
+        SchoolDTO s2DTO = new SchoolDTO(s2);
+        assertThat(schoolDTOS, containsInAnyOrder(s1DTO, s2DTO));
 
     }
 }

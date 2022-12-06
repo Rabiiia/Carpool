@@ -12,10 +12,7 @@ import facades.UserFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -41,6 +38,13 @@ public class SchoolEndpoint {
         System.out.println(schoolJSON);
         return Response.ok(schoolJSON).build();
 
+    }
+
+    @Path("/all")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getAll() {
+        return Response.ok().entity(GSON.toJson(SCHOOL_FACADE.getAll())).build();
 
     }
 

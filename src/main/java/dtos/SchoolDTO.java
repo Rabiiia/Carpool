@@ -3,6 +3,9 @@ package dtos;
 import entities.School;
 import entities.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SchoolDTO {
 
     int id;
@@ -20,4 +23,5 @@ public class SchoolDTO {
         this.schoolName = schoolName;
         this.location = location;
     }
+
 }

@@ -1,11 +1,14 @@
 package facades;
 
+import dtos.SchoolDTO;
 import entities.School;
 import errorhandling.API_Exception;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class SchoolFacade {
 
@@ -49,4 +52,10 @@ public class SchoolFacade {
         return school;
     }
 
+    public List<School> getAll(){
+        EntityManager em = EMF.createEntityManager();
+        TypedQuery<School> query = em.createQuery("SELECT s FROM School s", School.class);
+        List<School> schools = query.getResultList();
+        return schools;
+    }
 }

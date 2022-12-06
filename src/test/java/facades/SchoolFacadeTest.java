@@ -19,7 +19,7 @@ class SchoolFacadeTest {
     private static SchoolFacade SCHOOL_FACADE;
 
 
-    School s1;
+    School s1, s2;
 
     @BeforeAll
     public static void setUpClass() {
@@ -38,7 +38,9 @@ class SchoolFacadeTest {
             em.getTransaction().begin();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
             s1 = new School("testSchoolName", "testSchoolLocation");
+            s2 = new School("testSchoolName2", "testSchoolLocation2");
             em.persist(s1);
+            em.persist(s2);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -51,10 +53,17 @@ class SchoolFacadeTest {
 
     @Test
     void createSchool() throws API_Exception {
-
         School actual = SCHOOL_FACADE.createSchool("CPH business", "Nørgaardsvej 36");
         assertTrue(actual.getId()!=0);
         System.out.println(actual.getId()); //should print 2 meaning second index in the list
+    }
+
+    @Test
+    void allSchools() throws Exception {
+        int actual = SCHOOL_FACADE.getAll().size();
+        int expected = 2;
+        assertEquals(expected, actual);
+        System.out.println(actual);
     }
 
 

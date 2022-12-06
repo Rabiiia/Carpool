@@ -28,7 +28,7 @@ public class UserEndpointTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
 
-    School s1;
+    School s1, s2;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -68,23 +68,23 @@ public class UserEndpointTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+
+        User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
+        s1 = new School("testSchoolName", "testSchoolLocation");
+        s2 = new School("testSchoolName2", "testSchoolLocation2");
+
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Users.deleteAllRows").executeUpdate();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-            User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
-            s1 = new School("testSchoolName", "testSchoolLocation");
 
-//
-//            // persist user
-//            em.persist(user);
-//            // add user to school
-//            school.addUser(user);
-//            // persist school
-             em.persist(s1);
 
+            em.persist(user);
+            user.setSchool(s2);
+            em.persist(s2);
+            em.persist(s1);
             em.getTransaction().commit();
-            //userId = user.getId();
+            userId = user.getId();
         } finally {
             em.close();
         }
@@ -93,8 +93,6 @@ public class UserEndpointTest {
     @Test
     public void postTest() {
         UserDTO user = new UserDTO("testUserName", "testPassword","testAddress",8198201, 999999, "testName", "user",1);
-
-
         String requestBody = GSON.toJson(user);
 
         given()
@@ -105,9 +103,8 @@ public class UserEndpointTest {
                 .post("/users")
                 .then()
                 .assertThat()
-                .statusCode(200);
-                //.body("id", notNullValue()) //
-                //.body(JsonPath."name", equalTo("testName"));
+                .statusCode(200)
+                .extract().body().jsonPath().getJsonObject("username"); //think that's how you test the body
                 //.body("role", equalTo("user"));
 
     }
@@ -118,14 +115,15 @@ public class UserEndpointTest {
         given()
                 .contentType("application/json")
                 .when()
-                .get("/users/"+userId).then()
+                .get("/users/{id}", userId).then()
                 .statusCode(200)
                 .body("username", equalTo("user"))
                 .body("address",equalTo("Værebrovej 18"))
                 .body("name", equalTo("Mogens"))
                 .body("phone",equalTo(20202020))
                 .body("role", equalTo("user"))
-                .body("zipcode",equalTo(2880));
+                .body("zipcode",equalTo(2880))
+                .body("schoolId",equalTo(s2.getId()));
 
     }
 
