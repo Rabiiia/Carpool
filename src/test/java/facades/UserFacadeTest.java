@@ -71,14 +71,14 @@ class UserFacadeTest {
                 "Per Madsen",
                 8847492,
                 "Pilegårdsvej 5",
-                1860, "CPH BUSINESS", "Nørgaardsvej 31");
+                1860, 1);
 
                 USER_FACADE.createUser("Konrad",
                 "test123",
                 "Martinus mark",
                 7555555,
                 "Søndermark 5",
-                9876, "CPH BUSINESS", "Nørgaardsvej 31");
+                9876, 1);
 
 
         //Testing if there are actually 2 users that are registered on the same school ?

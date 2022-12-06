@@ -91,11 +91,10 @@ public class UserEndpointTest {
 
     @Test
     public void postTest() {
-        User user = new User("testUserName", "testPassword","testName", 999999, "testAddress", 9990);
-        //School school = new School("testSchoolName", "testLocation");
-        user.setSchool(s1);
+        UserDTO user = new UserDTO("testUserName", "testPassword","testAddress",8198201, 999999, "testName", "user",1);
 
-        String requestBody = GSON.toJson(new UserDTO(user));
+
+        String requestBody = GSON.toJson(user);
 
         given()
                 .header("Content-type", ContentType.JSON)
