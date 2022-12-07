@@ -103,9 +103,9 @@ public class UserEndpointTest {
                 .post("/users")
                 .then()
                 .assertThat()
-                .statusCode(200)
-                .extract().body().jsonPath().getJsonObject("username"); //think that's how you test the body
-                //.body("role", equalTo("user"));
+                .statusCode(200);
+                //.extract().body().jsonPath().getJsonObject("username"); //think that's how you test the body
+                //.body("username", equalTo("testUserName"));
 
     }
 

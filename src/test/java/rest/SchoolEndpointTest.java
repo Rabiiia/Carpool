@@ -26,8 +26,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class SchoolEndpointTest {
 
@@ -98,8 +97,8 @@ public class SchoolEndpointTest {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .extract().body().jsonPath().getJsonObject("schoolName");
-                //.body("name", equalTo("testName"));//.body("role", equalTo("user"));
+                //.extract().body().jsonPath().getJsonObject("schoolName")
+                .body("schoolName", equalTo("DTU"));//.body("role", equalTo("user"));
 
 
     }
@@ -111,7 +110,7 @@ public class SchoolEndpointTest {
         schoolDTOS = given()
                 .contentType("application/json")
                 .when()
-                .get("/schools/all")
+                .get("/schools")
                 .then()
                 .extract().body().jsonPath().getList("", SchoolDTO.class);
 
