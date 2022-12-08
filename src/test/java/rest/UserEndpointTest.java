@@ -79,10 +79,12 @@ public class UserEndpointTest {
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
 
 
+            em.persist(s1);
             em.persist(user);
             user.setSchool(s2);
             em.persist(s2);
-            em.persist(s1);
+
+
             em.getTransaction().commit();
             userId = user.getId();
         } finally {
@@ -92,7 +94,7 @@ public class UserEndpointTest {
 
     @Test
     public void postTest() {
-        UserDTO user = new UserDTO("testUserName", "testPassword","testAddress",8198201, 999999, "testName", "user",1);
+        UserDTO user = new UserDTO("testUserName", "testPassword","testAddress",8198201, 999999, "testName", "user",3);
         String requestBody = GSON.toJson(user);
 
         given()
