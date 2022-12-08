@@ -7,20 +7,34 @@ public class UserDTO {
     String username;
     String address;
     int phone;
-
-    int zipcode;
-    String name;
+    int zipcode;String name;
     String role;
 
+    String password;
+
+
+    int schoolId;
+
     public UserDTO(User user) {
-        if(user.getId() != null)
-            this.id = user.getId();
+        if(user.getId() != null) this.id = user.getId();
         this.username = user.getUsername();
         this.name = user.getName();
         this.phone = user.getPhone();
         this.address = user.getAddress();
         this.zipcode = user.getZipcode();
         this.role = user.getRole();
+        this.schoolId = user.getSchool().getId();
+    }
+
+    public UserDTO(String username, String password, String address, int phone, int zipcode, String name, String role, int schoolId) {
+        this.username = username;
+        this.password = password;
+        this.address = address;
+        this.phone = phone;
+        this.zipcode = zipcode;
+        this.name = name;
+        this.role = role;
+        this.schoolId = schoolId;
     }
 
     public String getRole() {

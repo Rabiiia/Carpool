@@ -1,13 +1,13 @@
 package facades;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
+import entities.School;
 import entities.User;
 import errorhandling.API_Exception;
 import security.errorhandling.AuthenticationException;
+
+import java.util.List;
 
 /**
  * @author lam@cphbusiness.dk
@@ -73,16 +73,21 @@ public class UserFacade {
 
 
 
-    public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode) throws API_Exception {
+    public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode, int schoolId) throws API_Exception {
 
         // Construct user:
         User user = new User(username, password, name, phone, address, zipcode);
+
 
         // Persist user to database:
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(user);
+            School school = em.find(School.class, schoolId);
+            if(school != null) {
+                user.setSchool(school);
+                em.persist(user);
+            }
             em.getTransaction().commit();
         } catch (PersistenceException e) {
             throw new API_Exception("Could not create user", 500, e);
