@@ -43,8 +43,8 @@ public class TokenEndpoint {
                 }
             }
             System.out.println("Token is valid");
-            String id = signedJWT.getJWTClaimsSet().getSubject(); // or .getClaim("username").toString();
-            User user = USER_FACADE.getUser(id);
+            String username = signedJWT.getJWTClaimsSet().getClaim("username").toString();
+            User user = USER_FACADE.getUser(username);
             SignedJWT renewedToken = Token.createToken(user);
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", user.getUsername());
