@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dtos.SchoolDTO;
 import entities.School;
-import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
@@ -21,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -99,8 +97,6 @@ public class SchoolEndpointTest {
                 .statusCode(200)
                 //.extract().body().jsonPath().getJsonObject("schoolName")
                 .body("schoolName", equalTo("DTU"));//.body("role", equalTo("user"));
-
-
     }
 
     @Test
@@ -117,6 +113,5 @@ public class SchoolEndpointTest {
         SchoolDTO s1DTO = new SchoolDTO(s1);
         SchoolDTO s2DTO = new SchoolDTO(s2);
         assertThat(schoolDTOS, containsInAnyOrder(s1DTO, s2DTO));
-
     }
 }

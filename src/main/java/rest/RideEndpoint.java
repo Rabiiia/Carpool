@@ -1,13 +1,9 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import dtos.RideDTO;
-import dtos.Waypoint;
 import errorhandling.API_Exception;
 import facades.RideFacade;
 import security.Token;
@@ -88,5 +84,15 @@ public class RideEndpoint {
         RideDTO ride = new RideDTO(RIDE_FACADE.getRide(id));
         System.out.println(ride);
         return Response.ok(new Gson().toJson(ride)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{destination}")
+    public Response getRideByDestination(@PathParam("destination") String destination) throws AuthenticationException {
+        List<RideDTO> rides = RIDE_FACADE.getRideByDestination(destination).stream().map(RideDTO::new).collect(Collectors.toList());
+        System.out.println(rides);
+        return Response.ok(new Gson().toJson(rides)).build();
     }
 }

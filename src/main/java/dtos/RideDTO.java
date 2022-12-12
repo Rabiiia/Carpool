@@ -24,6 +24,14 @@ public class RideDTO {
         passengers = ride.getPassengers().stream().map(UserDTO::new).collect(Collectors.toList());
     }
 
+    public RideDTO(String origin, String destination, long arrival, int seats, UserDTO driver) {
+        this.origin = origin;
+        this.destination = destination;
+        this.arrival = arrival;
+        this.seats = seats;
+        this.driver = driver;
+    }
+
     public int getId() {
         return id;
     }
