@@ -1,13 +1,12 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import dtos.RideDTO;
+import dtos.UserDTO;
 import dtos.Waypoint;
+import entities.Ride;
 import errorhandling.API_Exception;
 import facades.RideFacade;
 import security.Token;
@@ -19,6 +18,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 public class RideEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final RideFacade RIDE_FACADE = RideFacade.getInstance(EMF);
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -88,5 +90,18 @@ public class RideEndpoint {
         RideDTO ride = new RideDTO(RIDE_FACADE.getRide(id));
         System.out.println(ride);
         return Response.ok(new Gson().toJson(ride)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{destination}")
+    public Response getDestination(@PathParam("destination") String destination) throws AuthenticationException {
+        List<RideDTO> rideDTOS = new ArrayList<>();
+        for (Ride ride : RIDE_FACADE.getDestination(destination)) {
+           rideDTOS.add(new RideDTO(ride));
+        }
+        String rideJSON = GSON.toJson(rideDTOS);
+        return Response.ok(rideJSON).build();
     }
 }
