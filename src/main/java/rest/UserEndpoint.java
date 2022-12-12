@@ -33,7 +33,7 @@ public class UserEndpoint {
             name = jsonObject.get("name").getAsString();
             email = jsonObject.get("email").getAsString();
             phone = jsonObject.get("phone").getAsInt();
-            address = jsonObject.get("street").getAsString();
+            address = jsonObject.get("address").getAsString();
             zipcode = jsonObject.get("zipcode").getAsInt();
             password = jsonObject.get("password").getAsString();
             school = jsonObject.get("school").getAsInt();
