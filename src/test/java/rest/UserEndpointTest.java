@@ -106,7 +106,6 @@ public class UserEndpointTest {
                 .then()
                 .assertThat()
                 .statusCode(200);
-                //.extract().body().jsonPath().getJsonObject("username"); //think that's how you test the body
                 //.body("username", equalTo("testUserName"));
 
     }

@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "rides")
+@NamedQuery(name = "Rides.deleteAllRows", query = "DELETE FROM Ride ")
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -127,5 +128,7 @@ public class Ride {
     public void setPassengers(Set<User> users) {
         this.passengers = users;
     }
+
+
 
 }

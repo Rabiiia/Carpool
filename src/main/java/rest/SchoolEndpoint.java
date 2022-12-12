@@ -4,12 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dtos.RideDTO;
 import dtos.SchoolDTO;
-import dtos.UserDTO;
 import errorhandling.API_Exception;
 import facades.SchoolFacade;
-import facades.UserFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;

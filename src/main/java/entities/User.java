@@ -90,6 +90,8 @@ public class User {
         role = "user";
     }
 
+
+
     public boolean verifyPassword(String pw) {
         return BCrypt.checkpw(pw, password);
     }

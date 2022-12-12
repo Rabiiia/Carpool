@@ -37,6 +37,8 @@ public class UserDTO {
         this.schoolId = schoolId;
     }
 
+
+
     public String getRole() {
         return role;
     }
