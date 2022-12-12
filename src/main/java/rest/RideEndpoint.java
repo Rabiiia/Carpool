@@ -96,9 +96,9 @@ public class RideEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{destination}")
-    public Response getDestination(@PathParam("destination") String destination) throws AuthenticationException {
+    public Response getRideByDestination(@PathParam("destination") String destination) throws AuthenticationException {
         List<RideDTO> rideDTOS = new ArrayList<>();
-        for (Ride ride : RIDE_FACADE.getDestination(destination)) {
+        for (Ride ride : RIDE_FACADE.getRideByDestination(destination)) {
            rideDTOS.add(new RideDTO(ride));
         }
         String rideJSON = GSON.toJson(rideDTOS);

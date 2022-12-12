@@ -64,7 +64,7 @@ public class RideFacade {
         }
     }
 
-    public List<Ride> getDestination(String destination) throws AuthenticationException {
+    public List<Ride> getRideByDestination(String destination) throws AuthenticationException {
         EntityManager em = EMF.createEntityManager();
         List<Ride> rides;
         try {
