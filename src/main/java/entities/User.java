@@ -87,6 +87,14 @@ public class User {
         this.role = "user";
     }
 
+<<<<<<< HEAD
+=======
+
+
+    public boolean verifyPassword(String pw) {
+        return BCrypt.checkpw(pw, password);
+    }
+>>>>>>> ff76f304ed4e74bd08e8982978d5742084885319
     public Integer getId() {
         return id;
     }

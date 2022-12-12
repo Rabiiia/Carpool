@@ -4,10 +4,13 @@ import dtos.Waypoint;
 import entities.Request;
 import entities.Ride;
 import entities.User;
+import security.errorhandling.AuthenticationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Set;
 
 public class RideFacade {
     private static RideFacade instance;
@@ -59,6 +62,19 @@ public class RideFacade {
         } finally {
             em.close();
         }
+    }
+
+    public List<Ride> getRideByDestination(String destination) throws AuthenticationException {
+        EntityManager em = EMF.createEntityManager();
+        List<Ride> rides;
+        try {
+            TypedQuery<Ride> query = em.createQuery("SELECT r FROM Ride r where r.destination = :destination", Ride.class);
+            query.setParameter("destination", destination);
+            rides = query.getResultList();
+        } finally {
+            em.close();
+        }
+        return rides;
     }
 
     public Ride getRide(int id) {

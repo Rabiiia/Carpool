@@ -106,14 +106,11 @@ public class UserEndpointTest {
                 .then()
                 .assertThat()
                 .statusCode(200);
-                //.extract().body().jsonPath().getJsonObject("username"); //think that's how you test the body
                 //.body("username", equalTo("testUserName"));
-
     }
 
     @Test
     public void testGetSpecificUser() {
-
         given()
                 .contentType("application/json")
                 .when()
@@ -126,7 +123,5 @@ public class UserEndpointTest {
                 .body("role", equalTo("user"))
                 .body("zipcode",equalTo(2880))
                 .body("schoolId",equalTo(s2.getId()));
-
     }
-
 }
