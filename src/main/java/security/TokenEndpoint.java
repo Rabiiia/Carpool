@@ -7,6 +7,7 @@ import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import dtos.UserDTO;
+import errorhandling.API_Exception;
 import facades.UserFacade;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
@@ -26,7 +27,7 @@ public class TokenEndpoint {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response verifyToken(@HeaderParam("x-access-token") String token) throws AuthenticationException {
+    public Response verifyToken(@HeaderParam("x-access-token") String token) throws AuthenticationException, API_Exception {
         System.out.println("Token: " + token);
 
         try {

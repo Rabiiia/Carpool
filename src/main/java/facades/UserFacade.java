@@ -55,7 +55,7 @@ public class UserFacade {
     // added this method because so that we can get new token everytime reloading the page in front end
     // we want this because we want to be stayed logged when we are active
     // however you will be logged out after 30 minutes if you are not active
-    public User getUser(String username) throws AuthenticationException {
+    public User getUser(String username) throws AuthenticationException, API_Exception {
         EntityManager em = EMF.createEntityManager();
         User user;
         try {
@@ -65,6 +65,8 @@ public class UserFacade {
             if (user == null) {
                 throw new AuthenticationException("Faulty token");
             }
+        } catch (NoResultException e) {
+            throw new API_Exception("No user found", e.hashCode());
         } finally {
             em.close();
         }

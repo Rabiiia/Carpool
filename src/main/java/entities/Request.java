@@ -28,9 +28,9 @@ public class Request {
     public Request() {
     }
 
-    public Request(int rideId, int userId, String status) {
-        this.ride = new Ride(rideId);
-        this.user = new User(userId);
+    public Request(Ride ride, User user, String status) {
+        this.ride = ride;
+        this.user = user;
         this.status = status;
     }
 

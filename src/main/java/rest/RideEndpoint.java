@@ -81,6 +81,7 @@ public class RideEndpoint {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRide(@PathParam("id") int id) {
+        System.out.println("ID: " + id);
         RideDTO ride = new RideDTO(RIDE_FACADE.getRide(id));
         System.out.println(ride);
         return Response.ok(new Gson().toJson(ride)).build();
@@ -89,8 +90,7 @@ public class RideEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{destination}")
-    public Response getRideByDestination(@PathParam("destination") String destination) throws AuthenticationException {
+    public Response getRideByDestination(@QueryParam("d") String destination) throws AuthenticationException {
         List<RideDTO> rides = RIDE_FACADE.getRideByDestination(destination).stream().map(RideDTO::new).collect(Collectors.toList());
         System.out.println(rides);
         return Response.ok(new Gson().toJson(rides)).build();
