@@ -30,13 +30,15 @@ public class SchoolEndpoint {
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public Response create(String jsonString) throws API_Exception {
-        String name, location;
+        String name, street;
+        int zipcode;
 
         JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-        name = jsonObject.get("schoolName").getAsString();
-        location = jsonObject.get("location").getAsString();
+        name = jsonObject.get("name").getAsString();
+        street = jsonObject.get("street").getAsString();
+        zipcode = jsonObject.get("zipcode").getAsInt();
 
-        SchoolDTO school = new SchoolDTO(SCHOOL_FACADE.createSchool(name, location));
+        SchoolDTO school = new SchoolDTO(SCHOOL_FACADE.createSchool(name, street, zipcode));
         String schoolJSON = GSON.toJson(school);
         System.out.println(schoolJSON);
         return Response.ok(schoolJSON).build();

@@ -1,10 +1,11 @@
 package security;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nimbusds.jose.*;
 import com.nimbusds.jwt.SignedJWT;
-import entities.User;
+import dtos.UserDTO;
 import facades.UserFacade;
 
 import java.util.logging.Level;
@@ -44,11 +45,12 @@ public class LoginEndpoint {
         System.out.println("Password: " + password);
 
         try {
-            User user = USER_FACADE.getVeryfiedUser(username, password);
+            UserDTO user = new UserDTO(USER_FACADE.getVerifiedUser(username, password));
             SignedJWT token = Token.createToken(user);
             JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("username", username);
             responseJson.addProperty("token", token.serialize());
+            responseJson.add("user", new Gson().toJsonTree(user));
+            System.out.println(responseJson);
             return Response.ok(responseJson.toString()).build();
         } catch (JOSEException | AuthenticationException ex) {
             if (ex instanceof AuthenticationException) {

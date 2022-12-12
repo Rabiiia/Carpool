@@ -23,15 +23,15 @@ public class SetupTestUsers {
     User admin = new User("admin", "test123", "Konrad", 30303030, "Liljevej 13", 2900);
     User both = new User("user_admin", "test123", "Bertram", 40404040, "Lykkevej 108", 4000);
 
-    if(admin.getPassword().equals("test")||user.getPassword().equals("test")||both.getPassword().equals("test"))
-      throw new UnsupportedOperationException("You have not changed the passwords");
+    /*if(admin.getPassword().equals("test")||user.getPassword().equals("test")||both.getPassword().equals("test"))
+      throw new UnsupportedOperationException("You have not changed the passwords");*/
 
     em.getTransaction().begin();
     em.persist(user);
     em.persist(admin);
     em.persist(both);
     em.getTransaction().commit();
-    System.out.println("PW: " + user.getPassword());
+    //System.out.println("PW: " + user.getPassword());
     System.out.println("Testing user with OK password: " + user.verifyPassword("test"));
     System.out.println("Testing user with wrong password: " + user.verifyPassword("test1"));
     System.out.println("Created TEST Users");

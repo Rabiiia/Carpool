@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "schools")
 @NamedQuery(name = "School.deleteAllRows", query = "DELETE FROM School")
 public class School {
     @Id
@@ -14,15 +15,17 @@ public class School {
     @Column(name = "school_id", nullable = false)
     private Integer id;
 
-    @Size(max = 45)
     @NotNull
-    @Column(name = "name", nullable = false, length = 45)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 45)
     @NotNull
-    @Column(name = "location", nullable = false, length = 45)
-    private String location;
+    @Column(name = "street", nullable = false)
+    private String street;
+
+    @NotNull
+    @Column(name = "zipcode", nullable = false)
+    private int zipcode;
 
     @OneToMany(mappedBy = "school")
     private Set<User> users = new LinkedHashSet<>();
@@ -30,20 +33,10 @@ public class School {
     public School() {
     }
 
-    public School(String name, String location) {
+    public School(String name, String street, int zipcode) {
         this.name = name;
-        this.location = location;
-    }
-
-
-    // Syncronizing with user object
-    public void addUser(User user) {
-        if (user != null) {
-            this.users.add(user);
-            user.setSchool(this);
-        } else {
-            this.users = null;
-        }
+        this.street = street;
+        this.zipcode = zipcode;
     }
 
     public Integer getId() {
@@ -62,20 +55,27 @@ public class School {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getStreet() {
+        return street;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-//    public Set<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(Set<User> users) {
-//        this.users = users;
-//    }
+    public int getZipcode() {
+        return zipcode;
+    }
 
+    public void setZipcode(int zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 }

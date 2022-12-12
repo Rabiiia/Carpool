@@ -7,8 +7,6 @@ import entities.User;
 import errorhandling.API_Exception;
 import security.errorhandling.AuthenticationException;
 
-import java.util.List;
-
 /**
  * @author lam@cphbusiness.dk
  */
@@ -36,16 +34,18 @@ public class UserFacade {
         return instance;
     }
 
-    public User getVeryfiedUser(String username, String password) throws AuthenticationException {
+    public User getVerifiedUser(String username, String password) throws AuthenticationException {
         EntityManager em = EMF.createEntityManager();
         User user;
         try {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
             query.setParameter("username", username);
             user = query.getSingleResult();
-            if (user == null || !user.verifyPassword(password)) {
+            if (!user.verifyPassword(password)) {
                 throw new AuthenticationException("Invalid user name or password");
             }
+        } catch (NoResultException e) {
+            throw new AuthenticationException("Invalid user name or password");
         } finally {
             em.close();
         }

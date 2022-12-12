@@ -37,8 +37,8 @@ class SchoolFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-            s1 = new School("testSchoolName", "testSchoolLocation");
-            s2 = new School("testSchoolName2", "testSchoolLocation2");
+            s1 = new School("testSchoolName", "testSchoolLocation", 2800);
+            s2 = new School("testSchoolName2", "testSchoolLocation2", 2800);
             em.persist(s1);
             em.persist(s2);
             em.getTransaction().commit();
@@ -53,7 +53,7 @@ class SchoolFacadeTest {
 
     @Test
     void createSchool() throws API_Exception {
-        School actual = SCHOOL_FACADE.createSchool("CPH business", "Nørgaardsvej 36");
+        School actual = SCHOOL_FACADE.createSchool("CPH business", "Nørgaardsvej 36", 2800);
         assertTrue(actual.getId()!=0);
         System.out.println(actual.getId()); //should print 2 meaning second index in the list
     }

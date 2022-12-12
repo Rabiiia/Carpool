@@ -22,6 +22,7 @@ public class Request {
     private Ride ride;
 
     @NotNull
+    @Column(name = "status")
     private String status;
 
     public Request() {
@@ -37,24 +38,12 @@ public class Request {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Ride getRide() {
         return ride;
-    }
-
-    public void setRide(Ride ride) {
-        this.ride = ride;
     }
 
     public String getStatus() {

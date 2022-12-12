@@ -14,4 +14,20 @@ public class RequestDTO {
         this.ride = new RideDTO(request.getRide());
         this.status = request.getStatus();
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public RideDTO getRide() {
+        return ride;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 }
