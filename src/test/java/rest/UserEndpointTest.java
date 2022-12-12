@@ -70,8 +70,8 @@ public class UserEndpointTest {
         EntityManager em = emf.createEntityManager();
 
         User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
-        s1 = new School("testSchoolName", "testSchoolLocation");
-        s2 = new School("testSchoolName2", "testSchoolLocation2");
+        s1 = new School("testSchoolName", "testSchoolLocation", 2800);
+        s2 = new School("testSchoolName2", "testSchoolLocation2", 2800);
 
         try {
             em.getTransaction().begin();

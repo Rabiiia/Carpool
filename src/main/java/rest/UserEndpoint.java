@@ -22,25 +22,26 @@ public class UserEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(String jsonString) throws API_Exception {
-       String username, password, name, address;
+        System.out.println(jsonString);
+
+        String name, email, address, password;
         int phone, zipcode;
-        int schoolId;
+        int school;
 
         try {
-            //her laver vi lidt user entity objekt en dto a la' retning, så den ikke går den ned i databasen for at createUser
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-            username = jsonObject.get("username").getAsString();
-            password = jsonObject.get("password").getAsString();
             name = jsonObject.get("name").getAsString();
+            email = jsonObject.get("email").getAsString();
             phone = jsonObject.get("phone").getAsInt();
-            address = jsonObject.get("address").getAsString();
+            address = jsonObject.get("street").getAsString();
             zipcode = jsonObject.get("zipcode").getAsInt();
-            schoolId = jsonObject.get("schoolId").getAsInt();
+            password = jsonObject.get("password").getAsString();
+            school = jsonObject.get("school").getAsInt();
         } catch (Exception e) {
             throw new API_Exception("Malformed JSON Supplied", 400, e);
         }
 
-        UserDTO user = new UserDTO(USER_FACADE.createUser(username, password, name, phone, address, zipcode, schoolId));
+        UserDTO user = new UserDTO(USER_FACADE.createUser(email, password, name, phone, address, zipcode, school));
         String userJSON = GSON.toJson(user);
         System.out.println(userJSON);
         return Response.ok(userJSON).build();

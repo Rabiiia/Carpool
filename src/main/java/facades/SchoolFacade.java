@@ -35,9 +35,9 @@ public class SchoolFacade {
         return instance;
     }
 
-    public School createSchool(String name, String location) throws API_Exception {
+    public School createSchool(String name, String location, int zipcode) throws API_Exception {
 
-        School school = new School(name, location);
+        School school = new School(name, location, zipcode);
 
         EntityManager em = EMF.createEntityManager();
         try {

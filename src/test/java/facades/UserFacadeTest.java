@@ -40,7 +40,7 @@ class UserFacadeTest {
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
            // u1 = new User("testUserName", "test123","Mogens", 20202020, "Værebrovej 18", 2880);
            // s1 = new School("testSchoolName", "testSchoolLocation");
-            s2 = new School("CPH BUSINESS", "Nørgaardsvej 31");
+            s2 = new School("CPH BUSINESS", "Nørgaardsvej 31", 2800);
 
 //            // persist user
 //            em.persist(u1);

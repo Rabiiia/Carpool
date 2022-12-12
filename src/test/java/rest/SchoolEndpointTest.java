@@ -69,8 +69,8 @@ public class SchoolEndpointTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        s1 = new School("testSchoolName", "testSchoolLocation");
-        s2 = new School("testSchoolName2", "testSchoolLocation2");
+        s1 = new School("testSchoolName", "testSchoolLocation", 2800);
+        s2 = new School("testSchoolName2", "testSchoolLocation2", 2800);
 
         try {
             em.getTransaction().begin();
@@ -85,7 +85,7 @@ public class SchoolEndpointTest {
 
     @Test
     public void postTest() {
-        SchoolDTO school = new SchoolDTO("DTU", "Kongens Lyngby");
+        SchoolDTO school = new SchoolDTO("DTU", "Kongens Lyngby", 2800  );
         String requestBody = GSON.toJson(school);
 
         given()
