@@ -36,18 +36,10 @@ class UserFacadeTest {
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("Users.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Ride.deleteAllRows").executeUpdate();
+            em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-           // u1 = new User("testUserName", "test123","Mogens", 20202020, "Værebrovej 18", 2880);
-           // s1 = new School("testSchoolName", "testSchoolLocation");
             s2 = new School("CPH BUSINESS", "Nørgaardsvej 31", 2800);
-
-//            // persist user
-//            em.persist(u1);
-//            // add user to school
-//            s1.addUser(u1);
-//            // persist school
-//            em.persist(s1);
 
             //persist school and add users later in the test down below
             em.persist(s2);
@@ -66,23 +58,23 @@ class UserFacadeTest {
     void createUserAndSchool() throws API_Exception {
 
 
-        USER_FACADE.createUser("Per",
+        User u1 = USER_FACADE.createUser("Per",
                 "test123",
                 "Per Madsen",
                 8847492,
                 "Pilegårdsvej 5",
-                1860, 1);
+                1860, s2.getId());
 
-                USER_FACADE.createUser("Konrad",
+        User u2 = USER_FACADE.createUser("Konrad",
                 "test123",
                 "Martinus mark",
                 7555555,
                 "Søndermark 5",
-                9876, 1);
+                9876, s2.getId());
 
 
         //Testing if there are actually 2 users that are registered on the same school ?
-        assertEquals(1, s2.getId());
+        //assertNotNull(user.getId());
 
     }
 

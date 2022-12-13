@@ -2,6 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import dtos.RideDTO;
 import dtos.UserDTO;
 import entities.Ride;
@@ -25,7 +26,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-@Disabled
+
 public class RideEndpointTest {
 
     private static final int SERVER_PORT = 7777;
@@ -75,15 +76,15 @@ public class RideEndpointTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        String username = "user";
+        String username = "user1";
         String password = "test123";
         try {
             em.getTransaction().begin();
-//            em.createQuery("delete from Ride ").executeUpdate();
-//            em.createQuery("delete from User").executeUpdate();
-//            em.createQuery("delete from School ").executeUpdate();
-            u1 = new User(username, password,"testName",8198201, "testAddress", 2400);
-            u2 = new User(username, password,"testName2",22222222, "testAddress2", 2222);
+            em.createNamedQuery("Ride.deleteAllRows").executeUpdate();
+            em.createNamedQuery("User.deleteAllRows").executeUpdate();
+            em.createNamedQuery("School.deleteAllRows").executeUpdate();
+            u1 = new User("user1", password,"testName",8198201, "testAddress", 2400);
+            u2 = new User("user2", password,"testName2",22222222, "testAddress2", 2222);
             s1 = new School("testSchoolName", "testSchoolLocation", 2400);
             s2 = new School("testSchoolName2", "testSchoolLocation2", 2222);
             r1 = new Ride("originTest", "destinationTest", 1L, (byte) 4, u1);
@@ -118,12 +119,15 @@ public class RideEndpointTest {
 
     @Test
     public void postRidesTest() {
-        UserDTO user = new UserDTO(u1);
-        RideDTO ride  = new RideDTO("originTest", "destinationTest", 1, 4, user);
-        String requestBody = GSON.toJson(ride);
+        JsonObject requestBody = new JsonObject();
+        requestBody.addProperty("origin", "originTest");
+        requestBody.addProperty("destination", "destinationTest");
+        requestBody.addProperty("arrival", 1);
+        requestBody.addProperty("seats", 4);
 
         given()
                 .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
                 .and()
                 .body(requestBody)
                 .when()
@@ -134,7 +138,7 @@ public class RideEndpointTest {
                 .body("origin", equalTo("originTest"));
     }
 
-    @Test
+    /*@Test
     public void getAll() {
         List<RideDTO> rideDTOS;
 
@@ -148,7 +152,7 @@ public class RideEndpointTest {
         RideDTO r1DTO = new RideDTO(r1);
         RideDTO r2DTO = new RideDTO(r2);
         assertThat(rideDTOS, containsInAnyOrder(r1DTO, r2DTO));
-    }
+    }*/
 
     @Test
      void testGetSpecificRide() {
@@ -162,4 +166,18 @@ public class RideEndpointTest {
                // .body("children", hasItems(hasEntry("name","Joseph"),hasEntry("name","Alberta")));
         System.out.println(rideId);
     }
+
+    /*@Test
+    void testRideByDestination() {
+        String destination = r1.getDestination();
+
+        given()
+                .contentType("application/json")
+                .when()
+                .get("/rides/{destination}", destination).then()
+                .statusCode(200);
+                //.body("destination", equalTo(r1.getDestination()));
+
+        System.out.println(destination);
+    }*/
 }

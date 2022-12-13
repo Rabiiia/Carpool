@@ -1,9 +1,6 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import dtos.UserDTO;
 import errorhandling.API_Exception;
 import facades.UserFacade;
@@ -37,7 +34,7 @@ public class UserEndpoint {
             zipcode = jsonObject.get("zipcode").getAsInt();
             password = jsonObject.get("password").getAsString();
             school = jsonObject.get("school").getAsInt();
-        } catch (Exception e) {
+        } catch (JsonSyntaxException e) {
             throw new API_Exception("Malformed JSON Supplied", 400, e);
         }
 

@@ -1,9 +1,6 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import dtos.SchoolDTO;
 import errorhandling.API_Exception;
 import facades.SchoolFacade;
@@ -26,15 +23,19 @@ public class SchoolEndpoint {
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public Response create(String jsonString) throws API_Exception {
-        String name, street;
+        String name, address;
         int zipcode;
 
-        JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-        name = jsonObject.get("name").getAsString();
-        street = jsonObject.get("street").getAsString();
-        zipcode = jsonObject.get("zipcode").getAsInt();
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+            name = jsonObject.get("name").getAsString();
+            address = jsonObject.get("address").getAsString();
+            zipcode = jsonObject.get("zipcode").getAsInt();
+        } catch (JsonSyntaxException e) {
+            throw new API_Exception("Malformed JSON Supplied", 400);
+        }
 
-        SchoolDTO school = new SchoolDTO(SCHOOL_FACADE.createSchool(name, street, zipcode));
+        SchoolDTO school = new SchoolDTO(SCHOOL_FACADE.createSchool(name, address, zipcode));
         System.out.println(GSON.toJson(school));
         return Response.ok(new Gson().toJson(school)).build();
 
