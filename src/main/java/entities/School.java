@@ -2,7 +2,6 @@ package entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ public class School {
 
     @NotNull
     @Column(name = "street", nullable = false)
-    private String street;
+    private String address;
 
     @NotNull
     @Column(name = "zipcode", nullable = false)
@@ -33,9 +32,9 @@ public class School {
     public School() {
     }
 
-    public School(String name, String street, int zipcode) {
+    public School(String name, String address, int zipcode) {
         this.name = name;
-        this.street = street;
+        this.address = address;
         this.zipcode = zipcode;
     }
 
@@ -55,12 +54,12 @@ public class School {
         this.name = name;
     }
 
-    public String getStreet() {
-        return street;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setAddress(String street) {
+        this.address = street;
     }
 
     public int getZipcode() {

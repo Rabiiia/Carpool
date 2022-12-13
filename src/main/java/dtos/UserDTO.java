@@ -8,10 +8,8 @@ public class UserDTO {
     String name;
     String username;
     int phone;
-    AddressDTO address;
+    AddressDTO location;
     String role;
-    String password;
-    int schoolId;
     InnerSchoolDTO school;
 
     public UserDTO(User user) {
@@ -19,19 +17,9 @@ public class UserDTO {
         this.username = user.getUsername();
         this.name = user.getName();
         this.phone = user.getPhone();
-        this.address = new AddressDTO(user.getAddress(), user.getZipcode());
+        this.location = new AddressDTO(user.getAddress(), user.getZipcode());
         this.role = user.getRole();
         this.school = new InnerSchoolDTO(user.getSchool());
-    }
-
-    public UserDTO(String username, String password, String street, int phone, int zipcode, String name, String role, int schoolId) {
-        this.username = username;
-        this.password = password;
-        this.address = new AddressDTO(street, zipcode);
-        this.phone = phone;
-        this.name = name;
-        this.role = role;
-        this.schoolId = schoolId;
     }
 
     public int getId() {
@@ -50,8 +38,8 @@ public class UserDTO {
         return username;
     }
 
-    public AddressDTO getAddress() {
-        return address;
+    public AddressDTO getLocation() {
+        return location;
     }
 
     public InnerSchoolDTO getSchool() {
@@ -61,17 +49,12 @@ public class UserDTO {
     public class InnerSchoolDTO {
         int id;
         String name;
-        AddressDTO address;
-
-        public InnerSchoolDTO(String name, String street, int zipcode) {
-            this.name = name;
-            this.address = new AddressDTO(street, zipcode);
-        }
+        AddressDTO location;
 
         public InnerSchoolDTO(School school) {
             if (school.getId() != null) this.id = school.getId();
             this.name = school.getName();
-            this.address = new AddressDTO(school.getStreet(), school.getZipcode());
+            this.location = new AddressDTO(school.getAddress(), school.getZipcode());
         }
     }
 }
