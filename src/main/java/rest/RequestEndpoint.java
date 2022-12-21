@@ -6,6 +6,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import dtos.RequestDTO;
 import entities.Request;
+import errorhandling.API_Exception;
 import facades.RequestFacade;
 import security.Token;
 import security.errorhandling.AuthenticationException;
@@ -29,10 +30,10 @@ public class RequestEndpoint {
     @POST
     //@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response requestSeat(@HeaderParam("x-access-token") String token/*, String jsonString*/) throws AuthenticationException, ParseException, JOSEException {
+    public Response requestSeat(@HeaderParam("x-access-token") String token/*, String jsonString*/) throws AuthenticationException, ParseException, JOSEException, API_Exception {
         SignedJWT signedJWT = Token.getVerifiedToken(token);
         int userId = Integer.parseInt(signedJWT.getJWTClaimsSet().getSubject());
-        String status = "pending";
+        String status = "accepted";
         RequestDTO request = new RequestDTO(REQUEST_FACADE.sendRequest(rideId, userId, status));
         return Response.ok(new Gson().toJson(request)).build();
     }

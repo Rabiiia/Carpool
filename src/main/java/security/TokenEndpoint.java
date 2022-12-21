@@ -1,11 +1,13 @@
 package security;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
-import entities.User;
+import dtos.UserDTO;
+import errorhandling.API_Exception;
 import facades.UserFacade;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
@@ -22,16 +24,10 @@ public class TokenEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 
-    //http://localhost:8080/api/verify GET
-    //when GETTING with token: "bcrypt" it should get admin and admins roles or token is not valid
-    //få useren til at blive logget ud efter 30 min , skal vi gøre her i denne ressource
-    //token har bare username og expiration date
-
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response verifyToken(@HeaderParam("x-access-token") String token) throws AuthenticationException {
-        // The token is given as the header "x-access-token" in the request, so we get it with a @HeaderParam annotation
+    public Response verifyToken(@HeaderParam("x-access-token") String token) throws AuthenticationException, API_Exception {
         System.out.println("Token: " + token);
 
         try {
@@ -43,12 +39,13 @@ public class TokenEndpoint {
                 }
             }
             System.out.println("Token is valid");
-            String id = signedJWT.getJWTClaimsSet().getSubject(); // or .getClaim("username").toString();
-            User user = USER_FACADE.getUser(id);
+            String username = signedJWT.getJWTClaimsSet().getClaim("username").toString();
+            UserDTO user = new UserDTO(USER_FACADE.getUser(username));
             SignedJWT renewedToken = Token.createToken(user);
             JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("username", user.getUsername());
             responseJson.addProperty("token", renewedToken.serialize());
+            responseJson.add("user", new Gson().toJsonTree(user));
+            System.out.println(responseJson);
             return Response.ok(responseJson.toString()).build();
         } catch (ParseException e) {
             System.out.println("ParseException: " + e.getMessage());

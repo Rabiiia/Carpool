@@ -1,10 +1,13 @@
 package facades;
 
 import entities.Request;
+import entities.Ride;
 import entities.User;
+import errorhandling.API_Exception;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -30,14 +33,19 @@ public class RequestFacade {
         return instance;
     }
 
-    public Request sendRequest(int rideId, int userId, String status) {
+    public Request sendRequest(int rideId, int userId, String status) throws API_Exception {
         EntityManager em = EMF.createEntityManager();
         try {
+            Ride ride = em.find(Ride.class, rideId);
+            User user = em.find(User.class, userId);
+            Request request = new Request(ride, user, status);
             em.getTransaction().begin();
-            Request request = new Request(rideId, userId, status);
             em.persist(request);
+            ride.addPassengers(user);// <-- to be changed
             em.getTransaction().commit();
             return request;
+        } catch (NoResultException e) {
+            throw new API_Exception("Could not send request", e.hashCode());
         } finally {
             em.close();
         }

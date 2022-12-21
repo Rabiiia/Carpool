@@ -33,5 +33,6 @@ public class ApplicationConfig extends Application {
         resources.add(UserEndpoint.class);
         resources.add(rest.RideEndpoint.class);
         resources.add(rest.RequestEndpoint.class);
+        resources.add(rest.SchoolEndpoint.class);
     }
 }

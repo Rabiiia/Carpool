@@ -8,23 +8,23 @@ import errorhandling.API_Exception;
 import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
-class UserFacadeTest {
+
+class SchoolFacadeTest {
 
     private static EntityManagerFactory EMF;
-    private static UserFacade USER_FACADE;
+    private static SchoolFacade SCHOOL_FACADE;
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    User u1;
+
     School s1, s2;
+
     @BeforeAll
     public static void setUpClass() {
         EMF = EMF_Creator.createEntityManagerFactoryForTest();
-        USER_FACADE= UserFacade.getUserFacade(EMF);
+        SCHOOL_FACADE= SchoolFacade.getSchoolFacade(EMF);
     }
 
     @AfterAll
@@ -36,14 +36,11 @@ class UserFacadeTest {
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("Ride.deleteAllRows").executeUpdate();
-            em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-            s2 = new School("CPH BUSINESS", "Nørgaardsvej 31", 2800);
-
-            //persist school and add users later in the test down below
+            s1 = new School("testSchoolName", "testSchoolLocation", 2800);
+            s2 = new School("testSchoolName2", "testSchoolLocation2", 2800);
+            em.persist(s1);
             em.persist(s2);
-
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -55,27 +52,18 @@ class UserFacadeTest {
     }
 
     @Test
-    void createUserAndSchool() throws API_Exception {
+    void createSchool() throws API_Exception {
+        School actual = SCHOOL_FACADE.createSchool("CPH business", "Nørgaardsvej 36", 2800);
+        assertTrue(actual.getId()!=0);
+        System.out.println(actual.getId()); //should print 2 meaning second index in the list
+    }
 
-
-        User u1 = USER_FACADE.createUser("Per",
-                "test123",
-                "Per Madsen",
-                8847492,
-                "Pilegårdsvej 5",
-                1860, s2.getId());
-
-        User u2 = USER_FACADE.createUser("Konrad",
-                "test123",
-                "Martinus mark",
-                7555555,
-                "Søndermark 5",
-                9876, s2.getId());
-
-
-        //Testing if there are actually 2 users that are registered on the same school ?
-        //assertNotNull(user.getId());
-
+    @Test
+    void allSchools() throws Exception {
+        int actual = SCHOOL_FACADE.getAll().size();
+        int expected = 2;
+        assertEquals(expected, actual);
+        System.out.println(actual);
     }
 
 

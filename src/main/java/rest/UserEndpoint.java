@@ -1,9 +1,6 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import dtos.UserDTO;
 import errorhandling.API_Exception;
 import facades.UserFacade;
@@ -22,23 +19,26 @@ public class UserEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(String jsonString) throws API_Exception {
-        String username, password, name, address;
+        System.out.println(jsonString);
+
+        String name, email, address, password;
         int phone, zipcode;
+        int school;
 
         try {
-            //her laver vi lidt user entity objekt en dto a la' retning, så den ikke går den ned i databasen for at createUser
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-            username = jsonObject.get("username").getAsString();
-            password = jsonObject.get("password").getAsString();
             name = jsonObject.get("name").getAsString();
+            email = jsonObject.get("email").getAsString();
             phone = jsonObject.get("phone").getAsInt();
             address = jsonObject.get("address").getAsString();
             zipcode = jsonObject.get("zipcode").getAsInt();
-        } catch (Exception e) {
+            password = jsonObject.get("password").getAsString();
+            school = jsonObject.get("school").getAsInt();
+        } catch (JsonSyntaxException e) {
             throw new API_Exception("Malformed JSON Supplied", 400, e);
         }
 
-        UserDTO user = new UserDTO(USER_FACADE.createUser(username, password, name, phone, address, zipcode));
+        UserDTO user = new UserDTO(USER_FACADE.createUser(email, password, name, phone, address, zipcode, school));
         String userJSON = GSON.toJson(user);
         System.out.println(userJSON);
         return Response.ok(userJSON).build();

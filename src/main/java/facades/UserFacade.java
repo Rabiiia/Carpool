@@ -1,10 +1,8 @@
 package facades;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
+import entities.School;
 import entities.User;
 import errorhandling.API_Exception;
 import security.errorhandling.AuthenticationException;
@@ -36,16 +34,18 @@ public class UserFacade {
         return instance;
     }
 
-    public User getVeryfiedUser(String username, String password) throws AuthenticationException {
+    public User getVerifiedUser(String username, String password) throws AuthenticationException {
         EntityManager em = EMF.createEntityManager();
         User user;
         try {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
             query.setParameter("username", username);
             user = query.getSingleResult();
-            if (user == null || !user.verifyPassword(password)) {
+            if (!user.verifyPassword(password)) {
                 throw new AuthenticationException("Invalid user name or password");
             }
+        } catch (NoResultException e) {
+            throw new AuthenticationException("Invalid user name or password");
         } finally {
             em.close();
         }
@@ -55,7 +55,7 @@ public class UserFacade {
     // added this method because so that we can get new token everytime reloading the page in front end
     // we want this because we want to be stayed logged when we are active
     // however you will be logged out after 30 minutes if you are not active
-    public User getUser(String username) throws AuthenticationException {
+    public User getUser(String username) throws AuthenticationException, API_Exception {
         EntityManager em = EMF.createEntityManager();
         User user;
         try {
@@ -65,6 +65,8 @@ public class UserFacade {
             if (user == null) {
                 throw new AuthenticationException("Faulty token");
             }
+        } catch (NoResultException e) {
+            throw new API_Exception("No user found", e.hashCode());
         } finally {
             em.close();
         }
@@ -73,16 +75,21 @@ public class UserFacade {
 
 
 
-    public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode) throws API_Exception {
+    public User createUser(String username, String password, String name, Integer phone, String address, Integer zipcode, int schoolId) throws API_Exception {
 
         // Construct user:
         User user = new User(username, password, name, phone, address, zipcode);
+
 
         // Persist user to database:
         EntityManager em = EMF.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(user);
+            School school = em.find(School.class, schoolId);
+            if(school != null) {
+                user.setSchool(school);
+                em.persist(user);
+            }
             em.getTransaction().commit();
         } catch (PersistenceException e) {
             throw new API_Exception("Could not create user", 500, e);

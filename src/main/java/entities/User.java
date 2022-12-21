@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@NamedQuery(name = "Users.deleteAllRows", query = "DELETE FROM User")
+@NamedQuery(name = "User.deleteAllRows", query = "DELETE FROM User")
 @Table(name = "users")
 public class User {
     @Id
@@ -17,41 +17,42 @@ public class User {
     @Column(name = "user_id", nullable = false)
     private Integer id;
 
-    @Size(max = 45)
     @NotNull
-    @Column(name = "address", nullable = false, length = 45)
-    private String address;
-
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 45)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id")
+    private School school;
 
     @NotNull
     @Column(name = "phone", nullable = false)
     private Integer phone;
 
     @NotNull
-    @Lob
-    @Column(name = "role", nullable = false)
-    private String role;
-
-    @Size(max = 45)
-    @NotNull
-    @Column(name = "username", nullable = false, length = 45)
-    private String username;
+    @Column(name = "address", nullable = false)
+    private String address;
 
     @NotNull
     @Column(name = "zipcode", nullable = false)
     private Integer zipcode;
 
+    @Size(max = 60)
+    @NotNull
+    @Column(name = "password", nullable = false, length = 60)
+    private String password;
+
+    @NotNull
+    @Lob
+    @Column(name = "role", nullable = false)
+    private String role;
+
     @OneToMany(mappedBy = "user")
-    private Set<Request> requests = new LinkedHashSet<>();
+    private Set<Request> outgoingRequests = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "passengers",
@@ -62,6 +63,7 @@ public class User {
     @OneToMany(mappedBy = "driver")
     private Set<Ride> ridesCreated = new LinkedHashSet<>();
 
+    // TODO: incomingRequests
 
     public User() {
     }
@@ -72,36 +74,21 @@ public class User {
 
     public User(String username, String password) {
         this.username = username;
-        this.password = BCrypt.hashpw(password,BCrypt.gensalt());
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public User(String username, String password, String name, Integer phone, String address, Integer zipcode) {
         this.username = username;
-        this.password = BCrypt.hashpw(password,BCrypt.gensalt());
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.zipcode = zipcode;
-        role = "user";
+        this.role = "user";
     }
 
-    public boolean verifyPassword(String pw) {
-        return BCrypt.checkpw(pw, password);
-    }
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getName() {
@@ -112,12 +99,20 @@ public class User {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
     }
 
     public Integer getPhone() {
@@ -128,20 +123,12 @@ public class User {
         this.phone = phone;
     }
 
-    public String getRole() {
-        return role;
+    public String getAddress() {
+        return address;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAddress(String street) {
+        this.address = street;
     }
 
     public Integer getZipcode() {
@@ -152,28 +139,33 @@ public class User {
         this.zipcode = zipcode;
     }
 
-    public Set<Request> getRequests() {
-        return requests;
+    public boolean verifyPassword(String password) {
+        return BCrypt.checkpw(password, this.password);
     }
 
-    public void setRequests(Set<Request> requests) {
-        this.requests = requests;
+    public void setPassword(String password) {
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Set<Request> getOutgoingRequests() {
+        return outgoingRequests;
     }
 
     public Set<Ride> getRidesJoined() {
         return ridesJoined;
     }
 
-    public void setRidesJoined(Set<Ride> ridesJoined) {
-        this.ridesJoined = ridesJoined;
-    }
-
     public Set<Ride> getRidesCreated() {
         return ridesCreated;
     }
 
-    public void setRidesCreated(Set<Ride> ridesCreated) {
-        this.ridesCreated = ridesCreated;
-    }
-
+    // TODO: getIncomingRequests()
 }

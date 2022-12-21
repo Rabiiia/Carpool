@@ -3,38 +3,41 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import dtos.UserDTO;
+import dtos.SchoolDTO;
 import entities.School;
-import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class UserEndpointTest {
+public class SchoolEndpointTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-
-    School s1, s2;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    School s1, s2;
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -61,16 +64,10 @@ public class UserEndpointTest {
 
         httpServer.shutdownNow();
     }
-    int userId;
-
-    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
 
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-
-        User user = new User("user", "test","Mogens", 20202020, "Værebrovej 18", 2880);
         s1 = new School("testSchoolName", "testSchoolLocation", 2800);
         s2 = new School("testSchoolName2", "testSchoolLocation2", 2800);
 
@@ -79,16 +76,9 @@ public class UserEndpointTest {
             em.createNamedQuery("Ride.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("School.deleteAllRows").executeUpdate();
-
-
             em.persist(s1);
-            em.persist(user);
-            user.setSchool(s2);
             em.persist(s2);
-
-
             em.getTransaction().commit();
-            userId = user.getId();
         } finally {
             em.close();
         }
@@ -97,40 +87,38 @@ public class UserEndpointTest {
     @Test
     public void postTest() {
         JsonObject requestBody = new JsonObject();
-        requestBody.addProperty("name", "testName");
-        requestBody.addProperty("email", "testUserName");
-        requestBody.addProperty("phone", 8198201);
-        requestBody.addProperty("address", "testAddress");
-        requestBody.addProperty("zipcode", 999999);
-        requestBody.addProperty("password", "testPassword");
-        requestBody.addProperty("role", "user");
-        requestBody.addProperty("school", s2.getId());
+        requestBody.addProperty("name", "DTU");
+        requestBody.addProperty("address", "Kongens Lyngby");
+        requestBody.addProperty("zipcode", 2800);
 
         given()
                 .header("Content-type", ContentType.JSON)
                 .and()
                 .body(requestBody)
                 .when()
-                .post("/users")
+                .post("/schools")
                 .then()
                 .assertThat()
-                .statusCode(200);
-                //.body("username", equalTo("testUserName"));
+                .statusCode(200)
+                //.extract().body().jsonPath().getJsonObject("schoolName")
+                .body("name", equalTo("DTU"));//.body("role", equalTo("user"));
     }
 
-    @Test
-    public void testGetSpecificUser() {
-        given()
+    /*@Test
+    public void getAll() throws Exception {
+        List<SchoolDTO> schoolDTOS;
+
+        schoolDTOS = given()
                 .contentType("application/json")
                 .when()
-                .get("/users/{id}", userId).then()
-                .statusCode(200)
-                .body("username", equalTo("user"))
-                //.body("address",equalTo())
-                .body("name", equalTo("Mogens"))
-                .body("phone",equalTo(20202020))
-                .body("role", equalTo("user"));
-                //.body("zipcode",equalTo(2880))
-                //.body("schoolId",equalTo(s2.getId()));
-    }
+                .get("/schools")
+                .then()
+                .extract().body().jsonPath().getList("", SchoolDTO.class);
+
+        SchoolDTO s1DTO = new SchoolDTO(s1);
+        SchoolDTO s2DTO = new SchoolDTO(s2);
+        System.out.println(GSON.toJson(s1DTO));
+        System.out.println(GSON.toJson(s2DTO));
+        assertThat(schoolDTOS, containsInAnyOrder(s1DTO, s2DTO));
+    }*/
 }

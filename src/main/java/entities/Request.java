@@ -22,14 +22,15 @@ public class Request {
     private Ride ride;
 
     @NotNull
+    @Column(name = "status")
     private String status;
 
     public Request() {
     }
 
-    public Request(int rideId, int userId, String status) {
-        this.ride = new Ride(rideId);
-        this.user = new User(userId);
+    public Request(Ride ride, User user, String status) {
+        this.ride = ride;
+        this.user = user;
         this.status = status;
     }
 
@@ -37,24 +38,12 @@ public class Request {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Ride getRide() {
         return ride;
-    }
-
-    public void setRide(Ride ride) {
-        this.ride = ride;
     }
 
     public String getStatus() {

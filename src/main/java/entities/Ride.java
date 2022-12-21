@@ -1,7 +1,5 @@
 package entities;
 
-import dtos.Waypoint;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,6 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "rides")
+@NamedQuery(name = "Ride.deleteAllRows", query = "DELETE FROM Ride ")
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,16 +67,8 @@ public class Ride {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public User getDriver() {
         return driver;
-    }
-
-    public void setDriver(User driver) {
-        this.driver = driver;
     }
 
     public String getDestination() {
@@ -116,6 +107,14 @@ public class Ride {
         return requests;
     }
 
+    public void addRequest(Request requests) {
+        this.requests.add(requests);
+    }
+
+    public void removeRequest(Request requests) {
+        this.requests.remove(requests);
+    }
+
     public void setRequests(Set<Request> requests) {
         this.requests = requests;
     }
@@ -124,8 +123,15 @@ public class Ride {
         return passengers;
     }
 
+    public void addPassengers(User user) {
+        this.passengers.add(user);
+    }
+
+    public void removePassenger(User user) {
+        this.passengers.remove(user);
+    }
+
     public void setPassengers(Set<User> users) {
         this.passengers = users;
     }
-
 }
