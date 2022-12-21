@@ -19,7 +19,7 @@ public class School {
     private String name;
 
     @NotNull
-    @Column(name = "street", nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
     @NotNull
